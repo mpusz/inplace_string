@@ -37,3 +37,99 @@ TEST(inPlaceString, DefaultConstructor)
   EXPECT_EQ("", str);
   EXPECT_EQ(std::begin(str), std::end(str));
 }
+
+TEST(inPlaceString, UserConstructorPtrSize1)
+{
+  in_place_string<16> str{"", 0};
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0, str.size());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, UserConstructorPtrSize2)
+{
+  in_place_string<16> str{"test", 4};
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4, str.size());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, UserConstructorPtrSize3)
+{
+  in_place_string<4> str{"test", 4};
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4, str.size());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, UserConstructorPtrSize4)
+{
+  const char s[] = { 't', '\0', 'e', '\0', 's', '\0', 't', '\0' };
+  in_place_string<16> str{s, sizeof(s)};
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8, str.size());
+  EXPECT_STREQ("t", str.c_str());
+  EXPECT_STREQ("t", str.data());
+//  EXPECT_EQ(s, str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, UserConstructorPtr1)
+{
+  in_place_string<16> str{""};
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0, str.size());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, UserConstructorPtr2)
+{
+  in_place_string<16> str{"test"};
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4, str.size());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, UserConstructorPtr3)
+{
+  in_place_string<4> str{"test"};
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4, str.size());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, UserConstructorPtr4)
+{
+  const char s[] = { 't', '\0', 'e', '\0', 's', '\0', 't', '\0' };
+  in_place_string<16> str{s};
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(1, str.size());
+  EXPECT_STREQ("t", str.c_str());
+  EXPECT_STREQ("t", str.data());
+  EXPECT_EQ(s, str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(1, std::distance(std::begin(str), std::end(str)));
+}
