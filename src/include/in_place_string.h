@@ -22,6 +22,7 @@
 
 #include <string>
 #include <array>
+#include <iterator>
 #include <cstdint>
 #include <limits>
 
@@ -44,14 +45,13 @@ public:
 
   static_assert(MaxSize <= std::numeric_limits<size_type>::max(), "size_type type does not allow MaxSize characters");
 
-  constexpr basic_in_place_string() { chars_.front() = '\0'; size(0); }
+  constexpr basic_in_place_string() { front() = '\0'; size(0); }
   constexpr basic_in_place_string(const_pointer s, size_type count)
   {
     assign(s, count);
   }
   constexpr basic_in_place_string(const_pointer s) : basic_in_place_string(s, traits_type::length(s)) {}
   constexpr basic_in_place_string(const basic_in_place_string&) = default;
-
   constexpr basic_in_place_string& operator=(const basic_in_place_string&) = default;
   constexpr basic_in_place_string& operator=(const_pointer s)
   {
@@ -60,7 +60,7 @@ public:
 
   constexpr basic_in_place_string& assign(const_pointer s, size_type count)
   {
-    traits_type::copy(s, begin(), count);
+    traits_type::copy(begin(), s, count);
     (*this)[count] = '\0';
     size(count);
     return *this;
@@ -75,22 +75,22 @@ public:
   constexpr const_iterator end() const                      { return begin() + size(); }
   constexpr const_iterator cend() const                     { return begin() + size(); }
 
-  constexpr reverse_iterator rbegin();
-  constexpr const_reverse_iterator rbegin() const;
-  constexpr const_reverse_iterator crbegin() const;
-  constexpr reverse_iterator rend();
-  constexpr const_reverse_iterator rend() const;
-  constexpr const_reverse_iterator crend() const;
+  constexpr reverse_iterator rbegin()                       { return reverse_iterator(end()); }
+  constexpr const_reverse_iterator rbegin() const           { return const_reverse_iterator(end()); }
+  constexpr const_reverse_iterator crbegin() const          { return const_reverse_iterator(cend()); }
+  constexpr reverse_iterator rend()                         { return reverse_iterator(begin()); }
+  constexpr const_reverse_iterator rend() const             { return const_reverse_iterator(begin()); }
+  constexpr const_reverse_iterator crend() const            { return const_reverse_iterator(cbegin()); }
 
   // element access
   constexpr reference operator[](size_type pos)             { return *(begin() + pos); }
   constexpr const_reference operator[](size_type pos) const { return *(begin() + pos); }
   constexpr reference at(size_type pos)                     { return chars_.at(pos); }
   constexpr const_reference at(size_type pos) const         { return chars_.at(pos); }
-  constexpr reference front()                               { return *this[0]; }
-  constexpr const_reference front() const                   { return *this[0]; }
-  constexpr reference back()                                { return *this[size() - 1]; }
-  constexpr const_reference back() const                    { return *this[size() - 1]; }
+  constexpr reference front()                               { return (*this)[0]; }
+  constexpr const_reference front() const                   { return (*this)[0]; }
+  constexpr reference back()                                { return (*this)[size() - 1]; }
+  constexpr const_reference back() const                    { return (*this)[size() - 1]; }
   constexpr pointer data()                                  { return chars_.data(); }
   constexpr const_pointer data() const                      { return chars_.data(); }
   constexpr const_pointer c_str() const                     { return data(); }
@@ -102,7 +102,7 @@ public:
   constexpr bool empty() const          { return size() == 0; }
 
   // modifiers
-  constexpr void swap(basic_in_place_string& other);
+  constexpr void swap(basic_in_place_string& other) { std::swap(chars_, other.chars_); }
 
 private:
   std::array<value_type, MaxSize + 1> chars_; // size is stored as max_size() - size() on the last byte
@@ -117,7 +117,8 @@ constexpr bool operator==(const basic_in_place_string<CharT, MaxSize, Traits>& l
 
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator!=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return !(lhs == rhs); }
 
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator<(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
@@ -126,13 +127,18 @@ constexpr bool operator<(const basic_in_place_string<CharT, MaxSize, Traits>& lh
 
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator<=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return !(rhs < lhs); }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                         const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                         const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return rhs < lhs; }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return !(lhs < rhs); }
 
 
 template<typename CharT, std::size_t MaxSize, class Traits>
@@ -147,10 +153,13 @@ constexpr bool operator==(const basic_in_place_string<CharT, MaxSize, Traits>& l
 
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator!=(const CharT* lhs,
-                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return !(lhs == rhs); }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator!=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                          const CharT* rhs);
+                          const CharT* rhs)
+{ return !(lhs == rhs); }
 
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator<(const CharT* lhs,
@@ -164,22 +173,35 @@ constexpr bool operator<(const basic_in_place_string<CharT, MaxSize, Traits>& lh
 
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator<=(const CharT* lhs,
-                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return !(rhs < lhs); }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator<=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                          const CharT* rhs);
+                          const CharT* rhs)
+{ return !(rhs < lhs); }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>(const CharT* lhs,
-                         const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                         const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return rhs < lhs; }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                         const CharT* rhs);
+                         const CharT* rhs)
+{ return rhs < lhs; }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>=(const CharT* lhs,
-                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs);
+                          const basic_in_place_string<CharT, MaxSize, Traits>& rhs)
+{ return !(lhs < rhs); }
+
 template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
-                          const CharT* rhs);
+                          const CharT* rhs)
+{ return !(lhs < rhs); }
 
-template<std::size_t MaxSize>
-using in_place_string = basic_in_place_string<char, MaxSize>;
+template<std::size_t MaxSize> using in_place_string    = basic_in_place_string<char,     MaxSize>;
+template<std::size_t MaxSize> using in_place_wstring   = basic_in_place_string<wchar_t,  MaxSize>;
+template<std::size_t MaxSize> using in_place_u16string = basic_in_place_string<char16_t, MaxSize>;
+template<std::size_t MaxSize> using in_place_u32string = basic_in_place_string<char32_t, MaxSize>;
