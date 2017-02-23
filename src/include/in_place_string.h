@@ -25,6 +25,7 @@
 #include <iterator>
 #include <cstdint>
 #include <limits>
+#include <cassert>
 
 template<typename CharT, std::size_t MaxSize, typename Traits = std::char_traits<CharT>>
 class basic_in_place_string {
@@ -55,11 +56,12 @@ public:
   constexpr basic_in_place_string& operator=(const basic_in_place_string&) = default;
   constexpr basic_in_place_string& operator=(const_pointer s)
   {
-    return assign(s);
+    return assign(s, traits_type::length(s));
   }
 
   constexpr basic_in_place_string& assign(const_pointer s, size_type count)
   {
+    assert(count <= MaxSize);
     traits_type::copy(begin(), s, count);
     (*this)[count] = '\0';
     size(count);
