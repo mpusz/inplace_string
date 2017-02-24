@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#pragma once
+
 #include <string>
 #include <array>
 #include <iterator>
@@ -202,6 +204,14 @@ template<typename CharT, std::size_t MaxSize, class Traits>
 constexpr bool operator>=(const basic_in_place_string<CharT, MaxSize, Traits>& lhs,
                           const CharT* rhs)
 { return !(lhs < rhs); }
+
+
+template<typename CharT, std::size_t MaxSize, class Traits>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                              const basic_in_place_string<CharT, MaxSize, Traits>& v)
+{
+  return os << v.data();
+}
 
 template<std::size_t MaxSize> using in_place_string    = basic_in_place_string<char,     MaxSize>;
 template<std::size_t MaxSize> using in_place_wstring   = basic_in_place_string<wchar_t,  MaxSize>;
