@@ -207,10 +207,16 @@ constexpr bool operator>=(const basic_in_place_string<CharT, MaxSize, Traits>& l
 
 
 template<typename CharT, std::size_t MaxSize, class Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
-                                              const basic_in_place_string<CharT, MaxSize, Traits>& v)
+inline std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                                     const basic_in_place_string<CharT, MaxSize, Traits>& v)
 {
   return os << v.data();
+}
+
+template<typename CharT, std::size_t MaxSize, class Traits>
+inline std::basic_string<CharT, Traits> to_string(const basic_in_place_string<CharT, MaxSize, Traits>& v)
+{
+  return {v.data(), v.size()};
 }
 
 template<std::size_t MaxSize> using in_place_string    = basic_in_place_string<char,     MaxSize>;
