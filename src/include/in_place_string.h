@@ -31,6 +31,9 @@
 
 template<typename CharT, std::size_t MaxSize, typename Traits = std::char_traits<CharT>>
 class basic_in_place_string {
+  using impl_size_type = std::size_t;
+  static_assert(MaxSize <= std::numeric_limits<impl_size_type>::max(), "impl_size_type type does not allow MaxSize characters");
+
 public:
   using traits_type = Traits;
   using value_type = CharT;
@@ -38,15 +41,13 @@ public:
   using const_pointer = const value_type*;
   using reference = value_type&;
   using const_reference = const value_type&;
-  using size_type = std::uint8_t;
+  using size_type = std::size_t;
   using difference_type = std::ptrdiff_t;
 
   using iterator = value_type*;
   using const_iterator = const value_type*;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-
-  static_assert(MaxSize <= std::numeric_limits<size_type>::max(), "size_type type does not allow MaxSize characters");
 
   constexpr basic_in_place_string() { front() = '\0'; size(0); }
   constexpr basic_in_place_string(const_pointer s, size_type count)
@@ -110,7 +111,7 @@ public:
 
 private:
   std::array<value_type, MaxSize + 1> chars_; // size is stored as max_size() - size() on the last byte
-  void size(size_type s) { chars_.back() = max_size() - static_cast<value_type>(s); }
+  void size(size_type s) { chars_.back() = static_cast<impl_size_type>(max_size() - static_cast<value_type>(s)); }
 };
 
 
