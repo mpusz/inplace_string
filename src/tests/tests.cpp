@@ -23,6 +23,9 @@
 #include "in_place_string.h"
 #include <gtest/gtest.h>
 
+// explicit instantiation needed to make code coverage metrics work correctly
+template class basic_in_place_string<char, 16, std::char_traits<char>>;
+
 TEST(inPlaceString, CompileTime)
 {
 }

@@ -1,3 +1,7 @@
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=3600)](https://raw.githubusercontent.com/mpusz/in_place_string/master/LICENSE)
+[![Travis CI](https://img.shields.io/travis/mpusz/in_place_string/master.svg)](https://travis-ci.org/mpusz/in_place_string)
+[![Codecov](https://img.shields.io/codecov/c/github/mpusz/in_place_string/master.svg)](https://codecov.io/github/mpusz/in_place_string?branch=master)
+
 # `in_place_string<CharT, MaxSize, Traits>`
 
 `in_place_string<CharT, MaxSize, Traits>` is a `std::string`-like class template with the difference
