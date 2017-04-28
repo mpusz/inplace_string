@@ -34,7 +34,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 # add dependencies
 set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
 add_subdirectory(src/external/googletest EXCLUDE_FROM_ALL)
-target_include_directories(gtest_main PUBLIC src/external/googletest/include)
 add_library(google::test ALIAS gtest_main)
 
 # compilers-specific configuration
