@@ -26,9 +26,7 @@
 // explicit instantiation needed to make code coverage metrics work correctly
 template class basic_in_place_string<char, 16, std::char_traits<char>>;
 
-TEST(inPlaceString, CompileTime)
-{
-}
+TEST(inPlaceString, CompileTime) {}
 
 TEST(inPlaceString, DefaultConstructor)
 {
@@ -78,13 +76,13 @@ TEST(inPlaceString, UserConstructorPtrSize3)
 
 TEST(inPlaceString, UserConstructorPtrSize4)
 {
-  const char s[] = { 't', '\0', 'e', '\0', 's', '\0', 't', '\0' };
+  const char s[] = {'t', '\0', 'e', '\0', 's', '\0', 't', '\0'};
   in_place_string<16> str{s, sizeof(s)};
   EXPECT_FALSE(str.empty());
   EXPECT_EQ(8u, str.size());
   EXPECT_STREQ("t", str.c_str());
   EXPECT_STREQ("t", str.data());
-//  EXPECT_EQ(s, str);
+  //  EXPECT_EQ(s, str);
   EXPECT_NE(std::begin(str), std::end(str));
   EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
 }
@@ -126,7 +124,7 @@ TEST(inPlaceString, UserConstructorPtr3)
 
 TEST(inPlaceString, UserConstructorPtr4)
 {
-  const char s[] = { 't', '\0', 'e', '\0', 's', '\0', 't', '\0' };
+  const char s[] = {'t', '\0', 'e', '\0', 's', '\0', 't', '\0'};
   in_place_string<16> str{s};
   EXPECT_FALSE(str.empty());
   EXPECT_EQ(1u, str.size());
