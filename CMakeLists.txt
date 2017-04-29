@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.2)
-project(in_place_string C CXX)
+project(inplace_string C CXX)
 
 # The project version number.
 set(VERSION_MAJOR 0 CACHE STRING "Project major version number.")
