@@ -64,8 +64,13 @@ namespace mp {
     using reference = value_type&;
     using const_reference = const value_type&;
 
+#if defined(_MSC_VER) && (_ITERATOR_DEBUG_LEVEL != 0)
+    using iterator = stdext::checked_array_iterator<value_type*>;
+    using const_iterator = stdext::checked_array_iterator<const value_type*>;
+#else
     using iterator = value_type*;
     using const_iterator = const value_type*;
+#endif
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
     static constexpr size_type npos = static_cast<size_type>(-1);
@@ -119,20 +124,29 @@ namespace mp {
     }
 
     // iterators
+#if defined(_MSC_VER) && (_ITERATOR_DEBUG_LEVEL != 0)
+    constexpr iterator begin() { return iterator{data(), size()}; }
+    constexpr const_iterator begin() const { return const_iterator{data(), size()}; }
+#else
     constexpr iterator begin() { return data(); }
     constexpr const_iterator begin() const { return data(); }
+#endif
     constexpr iterator end() { return begin() + size(); }
     constexpr const_iterator end() const { return begin() + size(); }
 
-    constexpr reverse_iterator rbegin() { return reverse_iterator(end()); }
-    constexpr const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+    constexpr reverse_iterator rbegin() { return reverse_iterator{end()}; }
+    constexpr const_reverse_iterator rbegin() const { return const_reverse_iterator{end()}; }
     constexpr reverse_iterator rend() { return reverse_iterator(begin()); }
-    constexpr const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
+    constexpr const_reverse_iterator rend() const { return const_reverse_iterator{begin()}; }
 
+#if defined(_MSC_VER) && (_ITERATOR_DEBUG_LEVEL != 0)
+    constexpr const_iterator cbegin() const { return const_iterator{data(), size()}; }
+#else
     constexpr const_iterator cbegin() const { return data(); }
+#endif
     constexpr const_iterator cend() const { return begin() + size(); }
-    constexpr const_reverse_iterator crbegin() const { return const_reverse_iterator(cend()); }
-    constexpr const_reverse_iterator crend() const { return const_reverse_iterator(cbegin()); }
+    constexpr const_reverse_iterator crbegin() const { return const_reverse_iterator{cend()}; }
+    constexpr const_reverse_iterator crend() const { return const_reverse_iterator{cbegin()}; }
 
     // capacity
     constexpr size_type size() const { return max_size() - static_cast<impl_size_type>(chars_.back()); }
@@ -146,8 +160,8 @@ namespace mp {
     constexpr bool empty() const { return size() == 0; }
 
     // element access
-    constexpr const_reference operator[](size_type pos) const { return *(begin() + pos); }
-    constexpr reference operator[](size_type pos) { return *(begin() + pos); }
+    constexpr const_reference operator[](size_type pos) const { return *(data() + pos); }
+    constexpr reference operator[](size_type pos) { return *(data() + pos); }
     constexpr const_reference at(size_type pos) const { return chars_.at(pos); }
     constexpr reference at(size_type pos) { return chars_.at(pos); }
 
@@ -160,7 +174,7 @@ namespace mp {
     constexpr basic_inplace_string& assign(const_pointer s, size_type count) noexcept
     {
       assert(count <= MaxSize);
-      traits_type::copy(begin(), s, count);
+      traits_type::copy(data(), s, count);
       (*this)[count] = '\0';
       size(count);
       return *this;
@@ -171,7 +185,7 @@ namespace mp {
     constexpr basic_inplace_string& assign(size_type count, CharT ch)
     {
       assert(count <= MaxSize);
-      traits_type::assign(begin(), count, ch);
+      traits_type::assign(data(), count, ch);
       (*this)[count] = '\0';
       size(count);
       return *this;
