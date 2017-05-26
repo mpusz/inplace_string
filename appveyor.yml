@@ -14,6 +14,7 @@ platform:
  
 configuration:
   - Release
+  - Debug
 
 init:
   - git config --global core.autocrlf input
