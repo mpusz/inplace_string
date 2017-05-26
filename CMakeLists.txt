@@ -26,18 +26,29 @@ project(inplace_string C CXX)
 # The project version number.
 set(VERSION_MAJOR 0 CACHE STRING "Project major version number.")
 set(VERSION_MINOR 0 CACHE STRING "Project minor version number.")
-set(VERSION_PATCH 1 CACHE STRING "Project patch version number.")
+set(VERSION_PATCH 2 CACHE STRING "Project patch version number.")
 
-set(CMAKE_CXX_STANDARD 14)
+#set(CMAKE_CXX_STANDARD 17)
+if(MSVC)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
+else()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED on)
+
+# global compilation flags
+include(cmake/global_flags.cmake OPTIONAL)
 
 # add dependencies
 set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
+if(MSVC)
+add_definitions(-DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0)
+endif()
 add_subdirectory(src/external/googletest EXCLUDE_FROM_ALL)
 add_library(google::test ALIAS gtest_main)
 
-# compilers-specific configuration
-include(cmake/compile_warnings.cmake OPTIONAL)
+# project-specific compilation flags
+include(cmake/project_flags.cmake OPTIONAL)
 
 # add project code
 include_directories(src/include)
