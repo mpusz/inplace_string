@@ -753,24 +753,24 @@ TEST(inPlaceString, CRBeginCREnd1)
 {
   std::string txt{"abcdefgh"};
   inplace_string<16> str{"abcdefgh"};
-  EXPECT_EQ(std::distance(std::crbegin(txt), std::crend(txt)), std::distance(std::crbegin(str), std::crend(str)));
-  EXPECT_TRUE(std::equal(std::crbegin(txt), std::crend(txt), std::crbegin(str), std::crend(str)));
+  EXPECT_EQ(std::distance(txt.crbegin(), txt.crend()), std::distance(str.crbegin(), str.crend()));
+  EXPECT_TRUE(std::equal(txt.crbegin(), txt.crend(), str.crbegin(), str.crend()));
 }
 
 TEST(inPlaceString, CRBeginCREnd2)
 {
   std::string txt{""};
   inplace_string<16> str{""};
-  EXPECT_EQ(std::distance(std::crbegin(txt), std::crend(txt)), std::distance(std::crbegin(str), std::crend(str)));
-  EXPECT_TRUE(std::equal(std::crbegin(txt), std::crend(txt), std::crbegin(str), std::crend(str)));
+  EXPECT_EQ(std::distance(txt.crbegin(), txt.crend()), std::distance(str.crbegin(), str.crend()));
+  EXPECT_TRUE(std::equal(txt.crbegin(), txt.crend(), str.crbegin(), str.crend()));
 }
 
 TEST(inPlaceString, CRBeginCREnd3)
 {
   std::string txt;
   inplace_string<16> str;
-  EXPECT_EQ(std::distance(std::crbegin(txt), std::crend(txt)), std::distance(std::crbegin(str), std::crend(str)));
-  EXPECT_TRUE(std::equal(std::crbegin(txt), std::crend(txt), std::crbegin(str), std::crend(str)));
+  EXPECT_EQ(std::distance(txt.crbegin(), txt.crend()), std::distance(str.crbegin(), str.crend()));
+  EXPECT_TRUE(std::equal(txt.crbegin(), txt.crend(), str.crbegin(), str.crend()));
 }
 
 TEST(inPlaceString, MaxSize1)
