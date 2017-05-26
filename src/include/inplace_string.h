@@ -190,7 +190,7 @@ namespace mp {
     template<class InputIt>
     constexpr basic_inplace_string& assign(InputIt first, InputIt last)
     {
-      assert(std::distance(first, last) <= static_cast<ptrdiff_t>(MaxSize));
+      assert(std::distance(first, last) <= static_cast<std::ptrdiff_t>(MaxSize));
       const auto count = std::copy(first, last, begin()) - begin();
       (*this)[count] = '\0';
       size(count);
