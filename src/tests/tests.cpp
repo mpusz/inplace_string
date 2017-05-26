@@ -729,24 +729,24 @@ TEST(inPlaceString, CBeginCEnd1)
 {
   std::string txt{"abcdefgh"};
   inplace_string<16> str{"abcdefgh"};
-  EXPECT_EQ(std::distance(std::cbegin(txt), std::cend(txt)), std::distance(std::cbegin(str), std::cend(str)));
-  EXPECT_TRUE(std::equal(std::cbegin(txt), std::cend(txt), std::cbegin(str), std::cend(str)));
+  EXPECT_EQ(std::distance(txt.cbegin(), txt.cend()), std::distance(str.cbegin(), str.cend()));
+  EXPECT_TRUE(std::equal(txt.cbegin(), txt.cend(), str.cbegin(), str.cend()));
 }
 
 TEST(inPlaceString, CBeginCEnd2)
 {
   std::string txt{""};
   inplace_string<16> str{""};
-  EXPECT_EQ(std::distance(std::cbegin(txt), std::cend(txt)), std::distance(std::cbegin(str), std::cend(str)));
-  EXPECT_TRUE(std::equal(std::cbegin(txt), std::cend(txt), std::cbegin(str), std::cend(str)));
+  EXPECT_EQ(std::distance(txt.cbegin(), txt.cend()), std::distance(str.cbegin(), str.cend()));
+  EXPECT_TRUE(std::equal(txt.cbegin(), txt.cend(), str.cbegin(), str.cend()));
 }
 
 TEST(inPlaceString, CBeginCEnd3)
 {
   std::string txt;
   inplace_string<16> str;
-  EXPECT_EQ(std::distance(std::cbegin(txt), std::cend(txt)), std::distance(std::cbegin(str), std::cend(str)));
-  EXPECT_TRUE(std::equal(std::cbegin(txt), std::cend(txt), std::cbegin(str), std::cend(str)));
+  EXPECT_EQ(std::distance(txt.cbegin(), txt.cend()), std::distance(str.cbegin(), str.cend()));
+  EXPECT_TRUE(std::equal(txt.cbegin(), txt.cend(), str.cbegin(), str.cend()));
 }
 
 TEST(inPlaceString, CRBeginCREnd1)
