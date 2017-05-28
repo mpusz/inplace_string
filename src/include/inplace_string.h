@@ -123,7 +123,7 @@ namespace mp {
       return assign(ilist.begin(), ilist.size());
     }
 
-    // iterators
+// iterators
 #if defined(_MSC_VER) && (_ITERATOR_DEBUG_LEVEL != 0)
     constexpr iterator begin() { return iterator{data(), size()}; }
     constexpr const_iterator begin() const { return const_iterator{data(), size()}; }
@@ -152,19 +152,22 @@ namespace mp {
     constexpr size_type size() const { return max_size() - static_cast<impl_size_type>(chars_.back()); }
     constexpr size_type length() const { return size(); }
     constexpr size_type max_size() const { return MaxSize; }
-    constexpr void clear()
-    {
-      front() = static_cast<CharT>('\0');
-      size(0);
-    }
+    constexpr void clear() { size(0); }
     constexpr bool empty() const { return size() == 0; }
 
     // element access
-    constexpr const_reference operator[](size_type pos) const { return *(data() + pos); }
-    constexpr reference operator[](size_type pos) { return *(data() + pos); }
-    constexpr const_reference at(size_type pos) const { return chars_.at(pos); }
-    constexpr reference at(size_type pos) { return chars_.at(pos); }
-
+    constexpr const_reference operator[](size_type pos) const { return *(begin() + pos); }
+    constexpr reference operator[](size_type pos) { return *(begin() + pos); }
+    constexpr const_reference at(size_type pos) const
+    {
+      if(pos >= size()) throw std::out_of_range("inplace_string::at: 'pos' out of range");
+      return (*this)[pos];
+    }
+    constexpr reference at(size_type pos)
+    {
+      if (pos >= size()) throw std::out_of_range("inplace_string::at: 'pos' out of range");
+      return (*this)[pos];
+    }
     constexpr reference front() { return (*this)[0]; }
     constexpr const_reference front() const { return (*this)[0]; }
     constexpr reference back() { return (*this)[size() - 1]; }
@@ -175,7 +178,6 @@ namespace mp {
     {
       assert(count <= MaxSize);
       traits_type::copy(data(), s, count);
-      (*this)[count] = '\0';
       size(count);
       return *this;
     }
@@ -186,7 +188,6 @@ namespace mp {
     {
       assert(count <= MaxSize);
       traits_type::assign(data(), count, ch);
-      (*this)[count] = '\0';
       size(count);
       return *this;
     }
@@ -206,7 +207,6 @@ namespace mp {
     {
       assert(std::distance(first, last) <= static_cast<std::ptrdiff_t>(MaxSize));
       const auto count = std::copy(first, last, begin()) - begin();
-      (*this)[count] = '\0';
       size(count);
       return *this;
     }
@@ -240,7 +240,11 @@ namespace mp {
   private:
     std::array<value_type, MaxSize + 1> chars_;  // size is stored as max_size() - size() on the last byte
 
-    constexpr void size(size_type s) noexcept { chars_.back() = static_cast<impl_size_type>(max_size() - s); }
+    constexpr void size(size_type s) noexcept
+    {
+      chars_[s] = '\0';
+      chars_.back() = static_cast<impl_size_type>(max_size() - s);
+    }
   };
 
   // relational operators

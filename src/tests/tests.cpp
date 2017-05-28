@@ -827,3 +827,106 @@ TEST(inPlaceString, Clear2)
   EXPECT_EQ(std::begin(str), std::end(str));
 }
 
+TEST(inPlaceString, IndexOperator1)
+{
+  inplace_string<16> str{"abcdefgh"};
+  EXPECT_EQ('a', str[0]);
+  EXPECT_EQ('c', str[2]);
+  EXPECT_EQ('e', str[4]);
+  EXPECT_EQ('h', str[7]);
+}
+
+TEST(inPlaceString, IndexOperator2)
+{
+  const inplace_string<16> str{"abcdefgh"};
+  EXPECT_EQ('a', str[0]);
+  EXPECT_EQ('c', str[2]);
+  EXPECT_EQ('e', str[4]);
+  EXPECT_EQ('h', str[7]);
+}
+
+TEST(inPlaceString, At1)
+{
+  inplace_string<16> str{"abcdefgh"};
+  EXPECT_EQ('a', str.at(0));
+  EXPECT_EQ('c', str.at(2));
+  EXPECT_EQ('e', str.at(4));
+  EXPECT_EQ('h', str.at(7));
+  EXPECT_THROW(str.at(8), std::out_of_range);
+  EXPECT_THROW(str.at(255), std::out_of_range);
+}
+
+TEST(inPlaceString, At2)
+{
+  const inplace_string<16> str{"abcdefgh"};
+  EXPECT_EQ('a', str.at(0));
+  EXPECT_EQ('c', str.at(2));
+  EXPECT_EQ('e', str.at(4));
+  EXPECT_EQ('h', str.at(7));
+  EXPECT_THROW(str.at(8), std::out_of_range);
+  EXPECT_THROW(str.at(255), std::out_of_range);
+}
+
+TEST(inPlaceString, Front1)
+{
+  {
+    inplace_string<16> str{"abcdefgh"};
+    EXPECT_EQ('a', str.front());
+  }
+  {
+    inplace_string<3> str{"abc"};
+    EXPECT_EQ('a', str.front());
+  }
+  {
+    inplace_string<1> str{"x"};
+    EXPECT_EQ('x', str.front());
+  }
+}
+
+TEST(inPlaceString, Front2)
+{
+  {
+    const inplace_string<16> str{"abcdefgh"};
+    EXPECT_EQ('a', str.front());
+  }
+  {
+    const inplace_string<3> str{"abc"};
+    EXPECT_EQ('a', str.front());
+  }
+  {
+    const inplace_string<1> str{"x"};
+    EXPECT_EQ('x', str.front());
+  }
+}
+
+TEST(inPlaceString, Back1)
+{
+  {
+    inplace_string<16> str{"abcdefgh"};
+    EXPECT_EQ('h', str.back());
+  }
+  {
+    inplace_string<3> str{"abc"};
+    EXPECT_EQ('c', str.back());
+  }
+  {
+    inplace_string<1> str{"x"};
+    EXPECT_EQ('x', str.back());
+  }
+}
+
+TEST(inPlaceString, Back2)
+{
+  {
+    const inplace_string<16> str{"abcdefgh"};
+    EXPECT_EQ('h', str.back());
+  }
+  {
+    const inplace_string<3> str{"abc"};
+    EXPECT_EQ('c', str.back());
+  }
+  {
+    const inplace_string<1> str{"x"};
+    EXPECT_EQ('x', str.back());
+  }
+}
