@@ -930,3 +930,541 @@ TEST(inPlaceString, Back2)
     EXPECT_EQ('x', str.back());
   }
 }
+
+TEST(inPlaceString, AssignOther1)
+{
+  inplace_string<16> str;
+  str.assign(inplace_string<8>{"abcdefgh"});
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOther2)
+{
+  inplace_string<16> str{"abcdefgh"};
+  str.assign(inplace_string<8>{});
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignOtherPos1)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPos2)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 2);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(6u, str.size());
+  EXPECT_EQ(6u, str.length());
+  EXPECT_STREQ("cdefgh", str.c_str());
+  EXPECT_STREQ("cdefgh", str.data());
+  EXPECT_EQ("cdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(6, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPos3)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 8);
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_NE(str.data(), nullptr);
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignOtherPos4)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  EXPECT_THROW(str.assign(txt, 9), std::out_of_range);
+}
+
+TEST(inPlaceString, AssignOtherPosN1)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 3);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(3u, str.size());
+  EXPECT_EQ(3u, str.length());
+  EXPECT_STREQ("abc", str.c_str());
+  EXPECT_STREQ("abc", str.data());
+  EXPECT_EQ("abc", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(3, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPosN2)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 8);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPosN3)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 10);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPosN4)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 0);
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_NE(str.data(), nullptr);
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignOtherPosN5)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 2, 8);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(6u, str.size());
+  EXPECT_EQ(6u, str.length());
+  EXPECT_STREQ("cdefgh", str.c_str());
+  EXPECT_STREQ("cdefgh", str.data());
+  EXPECT_EQ("cdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(6, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPosN6)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 2, 2);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(2u, str.size());
+  EXPECT_EQ(2u, str.length());
+  EXPECT_STREQ("cd", str.c_str());
+  EXPECT_STREQ("cd", str.data());
+  EXPECT_EQ("cd", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(2, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignOtherPosN7)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str{txt, 8, 8};
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_NE(str.data(), nullptr);
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignOtherPosN8)
+{
+  inplace_string<8> txt{"abcdefgh"};
+  inplace_string<16> str;
+  EXPECT_THROW(str.assign(txt, 9, 3), std::out_of_range);
+}
+
+TEST(inPlaceString, AssignSV1)
+{
+  STRING_VIEW_NAMESPACE::string_view txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignTPosN1)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 3);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(3u, str.size());
+  EXPECT_EQ(3u, str.length());
+  EXPECT_STREQ("abc", str.c_str());
+  EXPECT_STREQ("abc", str.data());
+  EXPECT_EQ("abc", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(3, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignTPosN2)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 8);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignTPosN3)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 10);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignTPosN4)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 0, 0);
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_NE(str.data(), nullptr);
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignTPosN5)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 2, 8);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(6u, str.size());
+  EXPECT_EQ(6u, str.length());
+  EXPECT_STREQ("cdefgh", str.c_str());
+  EXPECT_STREQ("cdefgh", str.data());
+  EXPECT_EQ("cdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(6, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignTPosN6)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 2, 2);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(2u, str.size());
+  EXPECT_EQ(2u, str.length());
+  EXPECT_STREQ("cd", str.c_str());
+  EXPECT_STREQ("cd", str.data());
+  EXPECT_EQ("cd", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(2, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignTPosN7)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  str.assign(txt, 8, 8);
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_NE(str.data(), nullptr);
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignTPosN8)
+{
+  std::string txt{"abcdefgh"};
+  inplace_string<16> str;
+  EXPECT_THROW(str.assign(txt, 9, 3), std::out_of_range);
+}
+
+TEST(inPlaceString, AssignPtrSize1)
+{
+  inplace_string<16> str;
+  str.assign("", 0);
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignPtrSize2)
+{
+  inplace_string<16> str;
+  str.assign("test", 4);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4u, str.size());
+  EXPECT_EQ(4u, str.length());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignPtrSize3)
+{
+  inplace_string<4> str;
+  str.assign("test", 4);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4u, str.size());
+  EXPECT_EQ(4u, str.length());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignPtrSize4)
+{
+  inplace_string<4> str;
+  str.assign("test_test", 4);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4u, str.size());
+  EXPECT_EQ(4u, str.length());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignPtrSize5)
+{
+  const char s[] = {'t', '\0', 'e', '\0', 's', '\0', 't', '\0'};
+  inplace_string<16> str;
+  str.assign(s, sizeof(s));
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("t", str.c_str());
+  EXPECT_STREQ("t", str.data());
+  //  EXPECT_EQ(s, str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignPtr1)
+{
+  inplace_string<16> str;
+  str.assign("");
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignPtr2)
+{
+  inplace_string<16> str;
+  str.assign("test");
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4u, str.size());
+  EXPECT_EQ(4u, str.length());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignPtr3)
+{
+  inplace_string<4> str;
+  str.assign("test");
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4u, str.size());
+  EXPECT_EQ(4u, str.length());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignPtr4)
+{
+  const char s[] = {'t', '\0', 'e', '\0', 's', '\0', 't', '\0'};
+  inplace_string<16> str;
+  str.assign(s);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(1u, str.size());
+  EXPECT_EQ(1u, str.length());
+  EXPECT_STREQ("t", str.c_str());
+  EXPECT_STREQ("t", str.data());
+  EXPECT_EQ(s, str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(1, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignIlist1)
+{
+  inplace_string<16> str;
+  str.assign({'t', 'e', 's', 't'});
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(4u, str.size());
+  EXPECT_EQ(4u, str.length());
+  EXPECT_STREQ("test", str.c_str());
+  EXPECT_STREQ("test", str.data());
+  EXPECT_EQ("test", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(4, std::distance(std::begin(str), std::end(str)));
+}
+
+
+TEST(inPlaceString, AssignNC1)
+{
+  inplace_string<16> str;
+  str.assign(1u, 'x');
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(1u, str.size());
+  EXPECT_EQ(1u, str.length());
+  EXPECT_STREQ("x", str.c_str());
+  EXPECT_STREQ("x", str.data());
+  EXPECT_EQ("x", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(1, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignNC2)
+{
+  inplace_string<16> str;
+  str.assign(3u, 'x');
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(3u, str.size());
+  EXPECT_EQ(3u, str.length());
+  EXPECT_STREQ("xxx", str.c_str());
+  EXPECT_STREQ("xxx", str.data());
+  EXPECT_EQ("xxx", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(3, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignNC3)
+{
+  inplace_string<16> str;
+  str.assign(0u, 'x');
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}
+
+TEST(inPlaceString, AssignIter1)
+{
+  const char txt[] = "abcdefgh";
+  inplace_string<16> str;
+  str.assign(txt, txt + 8);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignIter2)
+{
+  const char txt[] = "abcdefgh";
+  inplace_string<16> str;
+  str.assign(txt + 2, txt + 5);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(3u, str.size());
+  EXPECT_EQ(3u, str.length());
+  EXPECT_STREQ("cde", str.c_str());
+  EXPECT_STREQ("cde", str.data());
+  EXPECT_EQ("cde", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(3, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AssignIter3)
+{
+  const char txt[] = "abcdefgh";
+  inplace_string<16> str;
+  str.assign(txt, txt);
+  EXPECT_TRUE(str.empty());
+  EXPECT_EQ(0u, str.size());
+  EXPECT_EQ(0u, str.length());
+  EXPECT_STREQ("", str.c_str());
+  EXPECT_STREQ("", str.data());
+  EXPECT_EQ("", str);
+  EXPECT_EQ(std::begin(str), std::end(str));
+}

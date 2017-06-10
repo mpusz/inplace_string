@@ -165,7 +165,7 @@ namespace mp {
     }
     constexpr reference at(size_type pos)
     {
-      if (pos >= size()) throw std::out_of_range("inplace_string::at: 'pos' out of range");
+      if(pos >= size()) throw std::out_of_range("inplace_string::at: 'pos' out of range");
       return (*this)[pos];
     }
     constexpr reference front() { return (*this)[0]; }
@@ -174,6 +174,30 @@ namespace mp {
     constexpr const_reference back() const { return (*this)[size() - 1]; }
 
     // modifiers
+    template<std::size_t OtherMaxSize>
+    constexpr basic_inplace_string& assign(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str)
+    {
+      return assign(str.data(), str.size());
+    }
+    template<std::size_t OtherMaxSize>
+    constexpr basic_inplace_string& assign(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str, size_type pos,
+                                           size_type count = npos)
+    {
+      return assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos, count));
+    }
+    constexpr basic_inplace_string& assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv)
+    {
+      assign(sv.data(), sv.size());
+      return *this;
+    }
+    template<class T,
+             detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>,
+                              std::negation<std::is_convertible<const T&, const CharT*>>> = true>
+    constexpr basic_inplace_string& assign(const T& t, size_type pos, size_type count = npos)
+    {
+      assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, count));
+      return *this;
+    }
     constexpr basic_inplace_string& assign(const_pointer s, size_type count) noexcept
     {
       assert(count <= MaxSize);
@@ -181,26 +205,17 @@ namespace mp {
       size(count);
       return *this;
     }
-
     constexpr basic_inplace_string& assign(const_pointer s) noexcept { return assign(s, traits_type::length(s)); };
-
+    constexpr basic_inplace_string& assign(std::initializer_list<CharT> ilist)
+    {
+      return assign(ilist.begin(), ilist.size());
+    }
     constexpr basic_inplace_string& assign(size_type count, CharT ch)
     {
       assert(count <= MaxSize);
       traits_type::assign(data(), count, ch);
       size(count);
       return *this;
-    }
-
-    template<std::size_t OtherMaxSize>
-    constexpr basic_inplace_string& assign(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str)
-    {
-      return assign(str.data(), str.size());
-    }
-
-    constexpr basic_inplace_string& assign(const basic_inplace_string& str, size_type pos, size_type count = npos)
-    {
-      return assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos, count));
     }
     template<class InputIt>
     constexpr basic_inplace_string& assign(InputIt first, InputIt last)
@@ -210,20 +225,6 @@ namespace mp {
       size(count);
       return *this;
     }
-    constexpr basic_inplace_string& assign(std::initializer_list<CharT> ilist)
-    {
-      return assign(ilist.begin(), ilist.size());
-    }
-    constexpr basic_inplace_string& assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv)
-    {
-      assign(sv.data(), sv.size());
-      return *this;
-    }
-
-    template<class T,
-             detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>,
-                              std::negation<std::is_convertible<const T&, const CharT*>>> = true>
-    constexpr basic_inplace_string& assign(const T& t, size_type pos, size_type count = npos);
 
     // string operations
     constexpr const_pointer c_str() const { return data(); }
