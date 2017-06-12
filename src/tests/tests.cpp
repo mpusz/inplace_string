@@ -814,6 +814,82 @@ TEST(inPlaceString, MaxSize3)
   }
 }
 
+TEST(inPlaceString, ResizeNC1)
+{
+  inplace_string<16> str;
+  EXPECT_TRUE(str.empty());
+  str.resize(5, '$');
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(5u, str.size());
+  EXPECT_EQ(5u, str.length());
+  EXPECT_STREQ("$$$$$", str.c_str());
+  EXPECT_STREQ("$$$$$", str.data());
+  EXPECT_EQ("$$$$$", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(5, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, ResizeNC2)
+{
+  inplace_string<16> str{"abc"};
+  EXPECT_EQ(3u, str.size());
+  str.resize(5, '$');
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(5u, str.size());
+  EXPECT_EQ(5u, str.length());
+  EXPECT_STREQ("abc$$", str.c_str());
+  EXPECT_STREQ("abc$$", str.data());
+  EXPECT_EQ("abc$$", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(5, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, ResizeNC3)
+{
+  inplace_string<16> str{"abcde"};
+  EXPECT_EQ(5u, str.size());
+  str.resize(5, '$');
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(5u, str.size());
+  EXPECT_EQ(5u, str.length());
+  EXPECT_STREQ("abcde", str.c_str());
+  EXPECT_STREQ("abcde", str.data());
+  EXPECT_EQ("abcde", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(5, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, ResizeNC4)
+{
+  inplace_string<16> str{"abcdefgh"};
+  EXPECT_EQ(8u, str.size());
+  str.resize(5, '$');
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(5u, str.size());
+  EXPECT_EQ(5u, str.length());
+  EXPECT_STREQ("abcde", str.c_str());
+  EXPECT_STREQ("abcde", str.data());
+  EXPECT_EQ("abcde", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(5, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, ResizeN1)
+{
+  inplace_string<16> str{"abc"};
+  EXPECT_EQ(3u, str.size());
+  str.resize(5);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(5u, str.size());
+  EXPECT_EQ(5u, str.length());
+  EXPECT_STREQ("abc", str.c_str());
+  EXPECT_STREQ("abc", str.data());
+  EXPECT_EQ('\0', str[3]);
+  EXPECT_EQ('\0', str[4]);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(5, std::distance(std::begin(str), std::end(str)));
+}
+
 TEST(inPlaceString, Clear1)
 {
   inplace_string<16> str{"test"};

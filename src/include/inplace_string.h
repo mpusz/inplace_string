@@ -152,6 +152,14 @@ namespace mp {
     constexpr size_type size() const { return max_size() - static_cast<impl_size_type>(chars_.back()); }
     constexpr size_type length() const { return size(); }
     constexpr size_type max_size() const { return MaxSize; }
+    constexpr void resize(size_type n, value_type c)
+    {
+      const auto s = size();
+      if (n > s)
+        std::fill_n(chars_.begin() + s, n - s, c);
+      size(n);
+    }
+    constexpr void resize(size_type n) { resize(n, value_type{}); }
     constexpr void clear() { size(0); }
     constexpr bool empty() const { return size() == 0; }
 
