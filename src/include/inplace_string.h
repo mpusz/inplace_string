@@ -239,8 +239,9 @@ namespace mp {
   private:
     std::array<value_type, MaxSize + 1> chars_;  // size is stored as max_size() - size() on the last byte
 
-    constexpr void size(size_type s) noexcept
+    constexpr void size(size_type s)
     {
+      if(s > max_size()) throw std::length_error("mp::basic_inplace_string: size() > max_size()");
       chars_[s] = '\0';
       chars_.back() = static_cast<impl_size_type>(max_size() - s);
     }
