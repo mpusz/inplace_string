@@ -384,8 +384,8 @@ namespace mp {
   using inplace_string = basic_inplace_string<char, MaxSize>;
   template<std::size_t MaxSize>
   using inplace_wstring = basic_inplace_string<wchar_t, MaxSize>;
-  template<std::size_t MaxSize>
-  using inplace_u16string = basic_inplace_string<char16_t, MaxSize>;
-  template<std::size_t MaxSize>
-  using inplace_u32string = basic_inplace_string<char32_t, MaxSize>;
+  //  template<std::size_t MaxSize>
+  //  using inplace_u16string = basic_inplace_string<char16_t, MaxSize>;
+  //  template<std::size_t MaxSize>
+  //  using inplace_u32string = basic_inplace_string<char32_t, MaxSize>;
 }
