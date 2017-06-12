@@ -187,16 +187,14 @@ namespace mp {
     }
     constexpr basic_inplace_string& assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv)
     {
-      assign(sv.data(), sv.size());
-      return *this;
+      return assign(sv.data(), sv.size());
     }
     template<class T,
              detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>,
                               std::negation<std::is_convertible<const T&, const CharT*>>> = true>
     constexpr basic_inplace_string& assign(const T& t, size_type pos, size_type count = npos)
     {
-      assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, count));
-      return *this;
+      return assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, count));
     }
     constexpr basic_inplace_string& assign(const_pointer s, size_type count) noexcept
     {
