@@ -154,10 +154,10 @@ namespace mp {
     constexpr size_type max_size() const { return MaxSize; }
     constexpr void resize(size_type n, value_type c)
     {
-      const auto s = size();
-      if (n > s)
-        std::fill_n(chars_.begin() + s, n - s, c);
+      const auto sz = size();
       size(n);
+      if(n > sz)
+        traits_type::assign(data() + sz, n - sz, c);
     }
     constexpr void resize(size_type n) { resize(n, value_type{}); }
     constexpr void clear() { size(0); }
@@ -207,8 +207,8 @@ namespace mp {
     constexpr basic_inplace_string& assign(const_pointer s, size_type count) noexcept
     {
       assert(count <= MaxSize);
-      traits_type::copy(data(), s, count);
       size(count);
+      traits_type::copy(data(), s, count);
       return *this;
     }
     constexpr basic_inplace_string& assign(const_pointer s) noexcept { return assign(s, traits_type::length(s)); };
@@ -220,16 +220,15 @@ namespace mp {
     {
       assert(count < npos);
       assert(count <= MaxSize);
-      traits_type::assign(data(), count, ch);
       size(count);
+      traits_type::assign(data(), count, ch);
       return *this;
     }
     template<class InputIt, detail::Requires<std::negation<std::is_integral<InputIt>>> = true>
     constexpr basic_inplace_string& assign(InputIt first, InputIt last)
     {
-      assert(std::distance(first, last) <= static_cast<std::ptrdiff_t>(MaxSize));
-      const auto count = std::copy(first, last, chars_.begin()) - chars_.begin();
-      size(count);
+      size(std::distance(first, last));
+      traits_type::copy(data(), first, size());
       return *this;
     }
     template<class InputIt, detail::Requires<std::is_integral<InputIt>> = true>
