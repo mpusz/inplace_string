@@ -503,6 +503,19 @@ TEST(inPlaceString, UserConstructorIter3)
   EXPECT_EQ(std::begin(str), std::end(str));
 }
 
+TEST(inPlaceString, UserConstructorIter4)
+{
+  inplace_string<16> str(7u, 36u);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(7u, str.size());
+  EXPECT_EQ(7u, str.length());
+  EXPECT_STREQ("$$$$$$$", str.c_str());
+  EXPECT_STREQ("$$$$$$$", str.data());
+  EXPECT_EQ("$$$$$$$", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(7, std::distance(std::begin(str), std::end(str)));
+}
+
 TEST(inPlaceString, UserConstructorIlist1)
 {
   inplace_string<16> str{'t', 'e', 's', 't'};

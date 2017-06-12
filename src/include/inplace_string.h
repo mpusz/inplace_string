@@ -210,18 +210,24 @@ namespace mp {
     }
     constexpr basic_inplace_string& assign(size_type count, CharT ch)
     {
+      assert(count < npos);
       assert(count <= MaxSize);
       traits_type::assign(data(), count, ch);
       size(count);
       return *this;
     }
-    template<class InputIt>
+    template<class InputIt, detail::Requires<std::negation<std::is_integral<InputIt>>> = true>
     constexpr basic_inplace_string& assign(InputIt first, InputIt last)
     {
       assert(std::distance(first, last) <= static_cast<std::ptrdiff_t>(MaxSize));
       const auto count = std::copy(first, last, chars_.begin()) - chars_.begin();
       size(count);
       return *this;
+    }
+    template<class InputIt, detail::Requires<std::is_integral<InputIt>> = true>
+    constexpr basic_inplace_string& assign(InputIt first, InputIt last)
+    {
+      return assign(static_cast<size_type>(first), static_cast<value_type>(last));
     }
 
     // string operations
