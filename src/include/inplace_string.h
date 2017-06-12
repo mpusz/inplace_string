@@ -221,7 +221,7 @@ namespace mp {
     constexpr basic_inplace_string& assign(InputIt first, InputIt last)
     {
       assert(std::distance(first, last) <= static_cast<std::ptrdiff_t>(MaxSize));
-      const auto count = std::copy(first, last, begin()) - begin();
+      const auto count = std::copy(first, last, chars_.begin()) - chars_.begin();
       size(count);
       return *this;
     }
