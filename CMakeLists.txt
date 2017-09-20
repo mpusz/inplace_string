@@ -21,34 +21,25 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.2)
-project(inplace_string C CXX)
+project(inplace_string
+        VERSION 0.0.2)
 
-# The project version number.
-set(VERSION_MAJOR 0 CACHE STRING "Project major version number.")
-set(VERSION_MINOR 0 CACHE STRING "Project minor version number.")
-set(VERSION_PATCH 2 CACHE STRING "Project patch version number.")
-
-#set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 if(MSVC)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
-else()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 # global compilation flags
-include(cmake/global_flags.cmake OPTIONAL)
+include(global_flags OPTIONAL)
 
 # add dependencies
-set(gtest_force_shared_crt ON CACHE BOOL "Use shared (DLL) run-time lib even when Google Test is built as static lib.")
-if(MSVC)
-add_definitions(-DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0)
-endif()
-add_subdirectory(src/external/googletest EXCLUDE_FROM_ALL)
-add_library(google::test ALIAS gtest_main)
+include(gtest_download)
 
 # project-specific compilation flags
-include(cmake/project_flags.cmake OPTIONAL)
+include(project_flags OPTIONAL)
 
 # add project code
 include_directories(src/include)
