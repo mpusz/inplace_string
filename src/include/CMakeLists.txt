@@ -20,29 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
-project(inplace_string
-        VERSION 0.0.2)
+add_library(inplace_string INTERFACE)
+add_library(mp::inplace_string ALIAS inplace_string)
+target_include_directories(inplace_string INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#        $<BUILD_INTERFACE:${opt_BINARY_DIR}/include>
+#        $<BUILD_INTERFACE:${opt_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
-set(CMAKE_CXX_STANDARD 17)
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
-endif()
-set(CMAKE_CXX_STANDARD_REQUIRED on)
-
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
-# global compilation flags
-include(global_flags OPTIONAL)
-
-# add dependencies
-include(gtest_download)
-
-# project-specific compilation flags
-include(project_flags OPTIONAL)
-
-# add project code
-add_subdirectory(src/include)
-
-# add targets
-add_subdirectory(src/tests)
+install(TARGETS inplace_string EXPORT inplace_stringTargets
+        INCLUDES DESTINATION .)

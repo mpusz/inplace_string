@@ -22,5 +22,6 @@
 
 add_executable(unit_tests tests.cpp)
 target_link_libraries(unit_tests
-        PRIVATE google::test)
-add_test(unit_tests unit_tests)
+        PRIVATE mp::inplace_string google::test)
+add_test(NAME inplace_string.unit_tests
+         COMMAND unit_tests --number 0)
