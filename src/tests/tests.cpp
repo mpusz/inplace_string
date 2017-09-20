@@ -1020,6 +1020,68 @@ TEST(inPlaceString, Back2)
   }
 }
 
+TEST(inPlaceString, AppendOther1)
+{
+  inplace_string<8> txt{"def"};
+  inplace_string<16> str;
+  str.append(inplace_string<3>{"abc"}).append(txt);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(6u, str.size());
+  EXPECT_EQ(6u, str.length());
+  EXPECT_STREQ("abcdef", str.c_str());
+  EXPECT_STREQ("abcdef", str.data());
+  EXPECT_EQ("abcdef", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(6, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AppendOther2)
+{
+  inplace_string<8> txt{"def"};
+  inplace_string<16> str{"abc"};
+  str.append(txt).append(inplace_string<3>{"gh"});
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AppendOtherPosN1)
+{
+  inplace_string<8> txt{"def"};
+  inplace_string<16> str;
+  str.append(inplace_string<3>{"abc"}).append(txt);
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(6u, str.size());
+  EXPECT_EQ(6u, str.length());
+  EXPECT_STREQ("abcdef", str.c_str());
+  EXPECT_STREQ("abcdef", str.data());
+  EXPECT_EQ("abcdef", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(6, std::distance(std::begin(str), std::end(str)));
+}
+
+TEST(inPlaceString, AppendOtherPosN2)
+{
+  inplace_string<8> txt{"def"};
+  inplace_string<16> str{"abc"};
+  str.append(txt).append(inplace_string<3>{"gh"});
+  EXPECT_FALSE(str.empty());
+  EXPECT_EQ(8u, str.size());
+  EXPECT_EQ(8u, str.length());
+  EXPECT_STREQ("abcdefgh", str.c_str());
+  EXPECT_STREQ("abcdefgh", str.data());
+  EXPECT_EQ("abcdefgh", str);
+  EXPECT_NE(std::begin(str), std::end(str));
+  EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
+}
+
+
+
 TEST(inPlaceString, AssignOther1)
 {
   inplace_string<16> str;

@@ -183,6 +183,56 @@ namespace mp {
 
     // modifiers
     template<std::size_t OtherMaxSize>
+    basic_inplace_string& operator+=(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str)
+    {
+      return append(str);
+    }
+    basic_inplace_string& operator+=(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv) { return append(sv); }
+    basic_inplace_string& operator+=(const_pointer s) { return append(s); }
+    basic_inplace_string& operator+=(value_type c)
+    {
+      push_back(c);
+      return *this;
+    }
+    basic_inplace_string& operator+=(std::initializer_list<CharT> il) { return append(il); }
+
+    template<std::size_t OtherMaxSize>
+    basic_inplace_string& append(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str) { return append(str.data(), str.size()); }
+    template<std::size_t OtherMaxSize>
+    basic_inplace_string& append(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str, size_type pos,
+                                 size_type n = npos)
+    {
+      return append(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos, n));
+    }
+    basic_inplace_string& append(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv) { return append(sv.data(), sv.size()); }
+    template<class T,
+             detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>,
+                              std::negation<std::is_convertible<const T&, const CharT*>>> = true>
+    basic_inplace_string& append(const T& t, size_type pos, size_type n = npos) {
+      return append(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, n));
+    }
+    basic_inplace_string& append(const_pointer s, size_type n)
+    {
+      const auto sz = size();
+      size(sz + n);
+      traits_type::copy(data() + sz, s, n);
+      return *this;
+    }
+    basic_inplace_string& append(const_pointer s) { return append(s, traits_type::length(s)); }
+    basic_inplace_string& append(size_type n, value_type c) { resize(size() + n, c); return *this; }
+    template<class InputIterator>
+    basic_inplace_string& append(InputIterator first, InputIterator last)
+    {
+      const auto sz = size();
+      const auto count = std::distance(first, last);
+      size(sz + count);
+      traits_type::copy(data() + sz, first, count);
+      return *this;
+    }
+    basic_inplace_string& append(std::initializer_list<CharT> il) { return append(il.begin(), il.end()); }
+    void push_back(value_type c) { append(static_cast<size_type>(1), c); }
+
+    template<std::size_t OtherMaxSize>
     constexpr basic_inplace_string& assign(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str)
     {
       return assign(str.data(), str.size());
