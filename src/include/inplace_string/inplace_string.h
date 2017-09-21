@@ -28,14 +28,7 @@
 #include <iterator>
 #include <limits>
 #include <string>
-
-#ifdef _MSC_VER
 #include <string_view>
-#define STRING_VIEW_NAMESPACE ::std
-#else
-#include <experimental/string_view>
-#define STRING_VIEW_NAMESPACE ::std::experimental
-#endif
 
 namespace mp {
 
@@ -80,23 +73,23 @@ namespace mp {
     basic_inplace_string(const basic_inplace_string&) = default;
     template<std::size_t OtherMaxSize>
     constexpr basic_inplace_string(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str, size_type pos)
-        : basic_inplace_string{STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos)}
+        : basic_inplace_string{std::basic_string_view<CharT, Traits>{str}.substr(pos)}
     {
     }
     template<std::size_t OtherMaxSize>
     constexpr basic_inplace_string(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str, size_type pos,
                                    size_type n)
-        : basic_inplace_string{STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos, n)}
+        : basic_inplace_string{std::basic_string_view<CharT, Traits>{str}.substr(pos, n)}
     {
     }
     template<
         class T,
-        detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>> = true>
+        detail::Requires<std::is_convertible<const T&, std::basic_string_view<CharT, Traits>>> = true>
     constexpr basic_inplace_string(const T& t, size_type pos, size_type n)
-        : basic_inplace_string{STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, n)}
+        : basic_inplace_string{std::basic_string_view<CharT, Traits>{t}.substr(pos, n)}
     {
     }
-    constexpr explicit basic_inplace_string(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv)
+    constexpr explicit basic_inplace_string(std::basic_string_view<CharT, Traits> sv)
         : basic_inplace_string{sv.data(), sv.size()}
     {
     }
@@ -112,7 +105,7 @@ namespace mp {
 
     // assignment
     basic_inplace_string& operator=(const basic_inplace_string&) = default;
-    constexpr basic_inplace_string& operator=(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv)
+    constexpr basic_inplace_string& operator=(std::basic_string_view<CharT, Traits> sv)
     {
       return assign(sv);
     }
@@ -187,7 +180,7 @@ namespace mp {
     {
       return append(str);
     }
-    basic_inplace_string& operator+=(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv) { return append(sv); }
+    basic_inplace_string& operator+=(std::basic_string_view<CharT, Traits> sv) { return append(sv); }
     basic_inplace_string& operator+=(const_pointer s) { return append(s); }
     basic_inplace_string& operator+=(value_type c)
     {
@@ -202,14 +195,14 @@ namespace mp {
     basic_inplace_string& append(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str, size_type pos,
                                  size_type n = npos)
     {
-      return append(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos, n));
+      return append(std::basic_string_view<CharT, Traits>{str}.substr(pos, n));
     }
-    basic_inplace_string& append(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv) { return append(sv.data(), sv.size()); }
+    basic_inplace_string& append(std::basic_string_view<CharT, Traits> sv) { return append(sv.data(), sv.size()); }
     template<class T,
-             detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>,
+             detail::Requires<std::is_convertible<const T&, std::basic_string_view<CharT, Traits>>,
                               std::negation<std::is_convertible<const T&, const CharT*>>> = true>
     basic_inplace_string& append(const T& t, size_type pos, size_type n = npos) {
-      return append(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, n));
+      return append(std::basic_string_view<CharT, Traits>{t}.substr(pos, n));
     }
     basic_inplace_string& append(const_pointer s, size_type n)
     {
@@ -241,18 +234,18 @@ namespace mp {
     constexpr basic_inplace_string& assign(const basic_inplace_string<CharT, OtherMaxSize, Traits>& str, size_type pos,
                                            size_type count = npos)
     {
-      return assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{str}.substr(pos, count));
+      return assign(std::basic_string_view<CharT, Traits>{str}.substr(pos, count));
     }
-    constexpr basic_inplace_string& assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits> sv)
+    constexpr basic_inplace_string& assign(std::basic_string_view<CharT, Traits> sv)
     {
       return assign(sv.data(), sv.size());
     }
     template<class T,
-             detail::Requires<std::is_convertible<const T&, STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>>,
+             detail::Requires<std::is_convertible<const T&, std::basic_string_view<CharT, Traits>>,
                               std::negation<std::is_convertible<const T&, const CharT*>>> = true>
     constexpr basic_inplace_string& assign(const T& t, size_type pos, size_type count = npos)
     {
-      return assign(STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>{t}.substr(pos, count));
+      return assign(std::basic_string_view<CharT, Traits>{t}.substr(pos, count));
     }
     constexpr basic_inplace_string& assign(const_pointer s, size_type count) noexcept
     {
@@ -291,7 +284,7 @@ namespace mp {
     constexpr const_pointer c_str() const { return data(); }
     constexpr pointer data() { return chars_.data(); }
     constexpr const_pointer data() const { return chars_.data(); }
-    constexpr operator STRING_VIEW_NAMESPACE::basic_string_view<CharT, Traits>() const noexcept
+    constexpr operator std::basic_string_view<CharT, Traits>() const noexcept
     {
       return {data(), size()};
     }

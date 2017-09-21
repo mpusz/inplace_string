@@ -295,7 +295,7 @@ TEST(inPlaceString, UserConstructorTPosN8)
 
 TEST(inPlaceString, UserConstructorSV1)
 {
-  STRING_VIEW_NAMESPACE::string_view txt{"abcdefgh"};
+  std::string_view txt{"abcdefgh"};
   inplace_string<16> str{txt};
   EXPECT_FALSE(str.empty());
   EXPECT_EQ(8u, str.size());
@@ -545,7 +545,7 @@ TEST(inPlaceString, CopyAssignment1)
 
 TEST(inPlaceString, AssignmentSV1)
 {
-  STRING_VIEW_NAMESPACE::string_view txt{"abcdefgh"};
+  std::string_view txt{"abcdefgh"};
   inplace_string<16> str;
   str = txt;
   EXPECT_FALSE(str.empty());
@@ -1271,7 +1271,7 @@ TEST(inPlaceString, AssignOtherPosN8)
 
 TEST(inPlaceString, AssignSV1)
 {
-  STRING_VIEW_NAMESPACE::string_view txt{"abcdefgh"};
+  std::string_view txt{"abcdefgh"};
   inplace_string<16> str;
   str.assign(txt);
   EXPECT_FALSE(str.empty());
