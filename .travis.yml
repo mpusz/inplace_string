@@ -61,8 +61,8 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
-            - libc++1
-            - libc++abi1
+            - libc++-dev
+            - libc++abi-dev
 
     - os: linux
       env: CLANG_VERSION=5.0 BUILD_TYPE=Debug CODECOV=OFF
