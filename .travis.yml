@@ -42,7 +42,7 @@ matrix:
   include:
     - os: linux
       env: GCC_VERSION=7 BUILD_TYPE=Release CODECOV=OFF
-      addons:
+      addons: &gcc7
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -51,16 +51,11 @@ matrix:
 
     - os: linux
       env: GCC_VERSION=7 BUILD_TYPE=Debug CODECOV=ON
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
+      addons: *gcc7
 
     - os: linux
       env: CLANG_VERSION=5.0 BUILD_TYPE=Release CODECOV=OFF
-      addons:
+      addons: &clang5
         apt:
           sources:
             - llvm-toolchain-trusty-5.0
@@ -69,12 +64,7 @@ matrix:
 
     - os: linux
       env: CLANG_VERSION=5.0 BUILD_TYPE=Debug CODECOV=OFF
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-5.0
-          packages:
-            - clang-5.0
+      addons: *clang5
 
 before_install:
   ############################################################################
@@ -84,9 +74,7 @@ before_install:
   - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
   - |
     if [ -n "$CLANG_VERSION" ]; then
-      sudo PATH="${PATH}" CXX="$CXX" CC="$CC" ./install_libcxx.sh
       CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++"
-      CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -lc++abi"
     fi
 
   ############################################################################
