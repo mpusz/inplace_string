@@ -82,8 +82,9 @@ before_install:
   ############################################################################
   - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
   - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
-  - if [ -n "$CLANG_VERSION" ]; then
-      sudo PATH="${PATH}" CXX="$CXX" CC="$CC" ./install_libcxx.sh;
+  - |
+    if [ -n "$CLANG_VERSION" ]; then
+      sudo PATH="${PATH}" CXX="$CXX" CC="$CC" ./install_libcxx.sh
       CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++"
       CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -lc++abi"
     fi
