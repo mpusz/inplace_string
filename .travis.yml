@@ -76,8 +76,10 @@ before_install:
   - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
   - |
     if [ -n "$CLANG_VERSION" ]; then
-      CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -nostdinc++ -cxx-isystem /usr/include/c++/v1"
+      CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++"
       CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -lc++abi"
+      $CXX -E -x c++ - -v < /dev/null
+      ls /usr/include/c++/v1
     fi
 
   ############################################################################
