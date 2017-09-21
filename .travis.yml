@@ -20,98 +20,114 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Adapted from various sources, including:
+# - Eric Niebler's Ranges: https://github.com/ericniebler/range-v3
+# - Louis Dionne's Hana: https://github.com/ldionne/hana
+
 language: c++
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - g++-7
-    sources: &sources
-      - ubuntu-toolchain-r-test
+env:
+  global:
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+    - CMAKE_VERSION="3.9.3"
 
 cache:
   directories:
-    - ${TRAVIS_BUILD_DIR}/deps/llvm-5.0.0
+    - ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+
+git:
+  depth: 3
 
 matrix:
   include:
     - os: linux
-      env: COMPILER=g++-7 UNIT_TESTS=ON CODECOV=ON
-      compiler: gcc
+      env: GCC_VERSION=7 BUILD_TYPE=Release CODECOV=OFF
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
 
     - os: linux
-      env: LLVM_VERSION=5.0.0 UNIT_TESTS=OFF CODECOV=OFF
-      compiler: clang
+      env: GCC_VERSION=7 BUILD_TYPE=Debug CODECOV=ON
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
 
-install:
+    - os: linux
+      env: CLANG_VERSION=5.0 BUILD_TYPE=Release CODECOV=OFF
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+
+    - os: linux
+      env: CLANG_VERSION=5.0 BUILD_TYPE=Debug CODECOV=OFF
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+
+before_install:
   ############################################################################
-  # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  # Set compilers provided in matrix
   ############################################################################
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+  - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
 
   ############################################################################
-  # Setup default versions and override compiler if needed
-  ############################################################################
-  - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
-
-  ############################################################################
-  # Install a recent CMake
+  # Install requested CMake version
   ############################################################################
   - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      CMAKE_URL="http://www.cmake.org/files/v3.9/cmake-3.9.3-Linux-x86_64.tar.gz"
-      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+      if [ -z "$(ls -A ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached)" ]; then
+        CMAKE_URL="https://cmake.org/files/v3.9/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz"
+        mkdir -p ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+        travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+        touch ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached
+      else
+        echo "Using cached cmake version ${CMAKE_VERSION}."
+      fi
+      export PATH="${DEPS_DIR}/cmake-${CMAKE_VERSION}/bin:${PATH}"
     else
-      brew upgrade cmake || brew install cmake
+      if ! brew ls --version cmake &>/dev/null; then brew install cmake; fi
     fi
+
+  ############################################################################
+  # Print environment
+  ############################################################################
+  - which $CXX
+  - which $CC
+  - $CXX --version
+  - if [[ "$SANITIZER" != "" ]]; then echo SANITIZER=$SANITIZER; fi
+  - which cmake
   - cmake --version
 
-  ############################################################################
-  # Install Clang, libc++ and libc++abi
-  ############################################################################
-  - |
-    if [[ "${LLVM_VERSION}" != "" ]]; then
-      LLVM_DIR=${DEPS_DIR}/llvm-${LLVM_VERSION}
-      if [[ -z "$(ls -A ${LLVM_DIR})" ]]; then
-        LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
-        LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
-        LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
-        CLANG_URL="http://llvm.org/releases/${LLVM_VERSION}/clang+llvm-${LLVM_VERSION}-linux-x86_64-ubuntu14.04.tar.xz"
-        mkdir -p ${LLVM_DIR} ${LLVM_DIR}/build ${LLVM_DIR}/projects/libcxx ${LLVM_DIR}/projects/libcxxabi ${LLVM_DIR}/clang
-        travis_retry wget --quiet -O - ${LLVM_URL}      | tar --strip-components=1 -xJ -C ${LLVM_DIR}
-        travis_retry wget --quiet -O - ${LIBCXX_URL}    | tar --strip-components=1 -xJ -C ${LLVM_DIR}/projects/libcxx
-        travis_retry wget --quiet -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C ${LLVM_DIR}/projects/libcxxabi
-        travis_retry wget --quiet -O - ${CLANG_URL}     | tar --strip-components=1 -xJ -C ${LLVM_DIR}/clang
-        (cd ${LLVM_DIR}/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_DIR}/install -DCMAKE_CXX_COMPILER=clang++)
-        (cd ${LLVM_DIR}/build/projects/libcxx && make install -j2)
-        (cd ${LLVM_DIR}/build/projects/libcxxabi && make install -j2)
-      fi
-      export CXXFLAGS="-nostdinc++ -isystem ${LLVM_DIR}/install/include/c++/v1"
-      export LDFLAGS="-L ${LLVM_DIR}/install/lib -l c++ -l c++abi"
-      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
-      export PATH="${LLVM_DIR}/clang/bin:${PATH}"
-    fi
-  - ${CXX} --version
-
-before_script:
+install:
   ############################################################################
   # Go back to the root of the project and setup the build directory
   ############################################################################
   - cd ${TRAVIS_BUILD_DIR}
-  - mkdir build && cd build && cmake .. -DCODE_COVERAGE=${CODECOV}
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCODE_COVERAGE=$CODECOV
+  - cat CMakeFiles/CMakeError.log
+  - cat CMakeFiles/CMakeOutput.log
+  - cmake --build .
 
 script:
-  - cmake --build .
-  - |
-    if [[ "${UNIT_TESTS}" == "ON" ]]; then
-      src/tests/unit_tests
-    fi
+  - ctest -VV -j2
 
 after_success:
   - |
-    if [[ "${CODECOV}" == "ON" ]]; then
+    if [[ "$CODECOV" == "ON" ]]; then
       bash <(curl -s https://codecov.io/bash) -x gcov-7
     fi

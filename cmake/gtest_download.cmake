@@ -56,3 +56,5 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 add_library(google::test ALIAS gtest_main)
+
+enable_testing()
