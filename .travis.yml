@@ -61,6 +61,8 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - clang-5.0
+            - libc++1
+            - libc++abi1
 
     - os: linux
       env: CLANG_VERSION=5.0 BUILD_TYPE=Debug CODECOV=OFF
@@ -75,6 +77,7 @@ before_install:
   - |
     if [ -n "$CLANG_VERSION" ]; then
       CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++"
+      CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -lc++abi"
     fi
 
   ############################################################################
