@@ -20,13 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# library definition
 add_library(inplace_string INTERFACE)
 add_library(mp::inplace_string ALIAS inplace_string)
 target_include_directories(inplace_string INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-#        $<BUILD_INTERFACE:${opt_BINARY_DIR}/include>
-#        $<BUILD_INTERFACE:${opt_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-install(TARGETS inplace_string EXPORT inplace_stringTargets
-        INCLUDES DESTINATION .)
+# installation info
+install(TARGETS inplace_string EXPORT ${CMAKE_PROJECT_NAME}Targets
+        INCLUDES DESTINATION include)
+install(DIRECTORY inplace_string
+        DESTINATION include
+        COMPONENT Devel
+        CONFIGURATIONS Release)

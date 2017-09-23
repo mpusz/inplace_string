@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.8)
 project(inplace_string
-        VERSION 0.0.2)
+        VERSION 0.0.3)
 
 set(CMAKE_CXX_STANDARD 17)
 if(MSVC)
@@ -36,7 +36,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include(global_flags OPTIONAL)
 
 # add dependencies
-include(gtest_download)
+find_package(GTest MODULE REQUIRED)
 
 # project-specific compilation flags
 include(project_flags OPTIONAL)
@@ -44,5 +44,32 @@ include(project_flags OPTIONAL)
 # add project code
 add_subdirectory(src/include)
 
-# add targets
+# add unit tests
+enable_testing()
 add_subdirectory(src/tests)
+
+# prepare installation files
+include(CMakePackageConfigHelpers)
+set(ConfigPackageSource ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME})
+write_basic_package_version_file(
+        "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake"
+        VERSION ${${CMAKE_PROJECT_NAME}_VERSION}
+        COMPATIBILITY SameMajorVersion)
+configure_file(cmake/${CMAKE_PROJECT_NAME}-config.cmake
+        "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake"
+        COPYONLY)
+
+# install library
+set(ConfigPackageDestination lib/cmake/${CMAKE_PROJECT_NAME})
+install(EXPORT ${CMAKE_PROJECT_NAME}Targets
+        DESTINATION ${ConfigPackageDestination}
+        FILE ${CMAKE_PROJECT_NAME}-targets.cmake
+        NAMESPACE mp::
+        COMPONENT Devel
+        CONFIGURATIONS Release)
+install(FILES
+          "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake"
+          "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake"
+        DESTINATION ${ConfigPackageDestination}
+        COMPONENT Devel
+        CONFIGURATIONS Release)
