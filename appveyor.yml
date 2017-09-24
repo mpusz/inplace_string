@@ -22,11 +22,14 @@ init:
 clone_depth: 5
   
 install:
-  - git submodule update --init --recursive
-  
+  - git clone https://github.com/google/googletest.git
+  - cd googletest
+  - cmake -DCMAKE_INSTALL_PREFIX=../local -G "Visual Studio 15 2017 Win64" ..
+  - cmake --build . --config Release --target install
+
 before_build:
   - mkdir build && cd build
-  - cmake -G"Visual Studio 15 2017 Win64" ..
+  - cmake -CMAKE_INSTALL_PREFIX=../local -G "Visual Studio 15 2017 Win64" ..
 
 build:
   parallel: true

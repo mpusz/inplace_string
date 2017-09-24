@@ -71,8 +71,9 @@ before_install:
   ############################################################################
   # Set compilers provided in matrix
   ############################################################################
-  - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
-  - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+  - |
+    if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+    if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
 
   ############################################################################
   # Install requested CMake version
@@ -120,12 +121,22 @@ before_install:
   ############################################################################
   # Print environment
   ############################################################################
-  - which $CXX
-  - which $CC
-  - $CXX --version
-  - if [[ "$SANITIZER" != "" ]]; then echo SANITIZER=$SANITIZER; fi
-  - which cmake
-  - cmake --version
+  - |
+    which $CXX
+    which $CC
+    $CXX --version
+    if [[ "$SANITIZER" != "" ]]; then echo SANITIZER=$SANITIZER; fi
+    which cmake
+    cmake --version
+
+  ############################################################################
+  # Install dependencies
+  ############################################################################
+  - |
+    git clone https://github.com/google/googletest.git
+    cd googletest
+    cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local ..
+    cmake --build . --target install
 
 install:
   ############################################################################
@@ -133,7 +144,7 @@ install:
   ############################################################################
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCODE_COVERAGE=$CODECOV -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCODE_COVERAGE=$CODECOV -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
   - cat CMakeFiles/CMakeError.log
   - cat CMakeFiles/CMakeOutput.log
   - cmake --build .
