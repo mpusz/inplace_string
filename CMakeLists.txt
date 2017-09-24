@@ -51,16 +51,15 @@ add_subdirectory(src/tests)
 # prepare installation files
 include(CMakePackageConfigHelpers)
 set(ConfigPackageSource ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME})
+set(ConfigPackageDestination lib/cmake/${CMAKE_PROJECT_NAME})
 write_basic_package_version_file(
-        "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake"
-        VERSION ${${CMAKE_PROJECT_NAME}_VERSION}
+        ${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake
         COMPATIBILITY SameMajorVersion)
-configure_file(cmake/${CMAKE_PROJECT_NAME}-config.cmake
-        "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake"
-        COPYONLY)
+configure_package_config_file(cmake/simple_package-config.cmake.in
+        ${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake
+        INSTALL_DESTINATION ${ConfigPackageDestination})
 
 # install library
-set(ConfigPackageDestination lib/cmake/${CMAKE_PROJECT_NAME})
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets
         DESTINATION ${ConfigPackageDestination}
         FILE ${CMAKE_PROJECT_NAME}-targets.cmake
