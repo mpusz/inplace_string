@@ -31,7 +31,7 @@ install:
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
   - mkdir build && cd build
-  - cmake -CMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\local -G "Visual Studio 15 2017 Win64" ..
+  - cmake -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\local -G "Visual Studio 15 2017 Win64" ..
 
 build:
   parallel: true

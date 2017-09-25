@@ -80,7 +80,7 @@ before_install:
   ############################################################################
   - |
     if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
-      if [ -z "$(ls -A ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached)" ]; then
+      if [ -f ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached ]; then
         CMAKE_URL="https://cmake.org/files/v3.9/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz"
         mkdir -p ${DEPS_DIR}/cmake-${CMAKE_VERSION}
         travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake-${CMAKE_VERSION}
@@ -100,7 +100,7 @@ before_install:
     if [ -n "$CLANG_VERSION" ]; then
       LLVM_VERSION=${CLANG_VERSION}.0
       LLVM_DIR=${DEPS_DIR}/llvm/llvm-${LLVM_VERSION}
-      if [ -z "$(ls -A ${LLVM_DIR}/cached)" ]; then
+      if [ -f ${LLVM_DIR}/cached ]; then
         LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
         LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
         LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
@@ -136,6 +136,7 @@ before_install:
     git clone --depth=1 https://github.com/google/googletest.git
     cd googletest
     mkdir build && cd build
+    echo cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
     cmake --build . --target install
 
@@ -143,9 +144,11 @@ install:
   ############################################################################
   # Build project
   ############################################################################
-  - cd ${TRAVIS_BUILD_DIR}
-  - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DCODE_COVERAGE=$CODECOV
+  - |
+    cd ${TRAVIS_BUILD_DIR}
+    mkdir build && cd build
+    echo cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DCODE_COVERAGE=$CODECOV
+    cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DCODE_COVERAGE=$CODECOV
   - cat CMakeFiles/CMakeError.log
   - cat CMakeFiles/CMakeOutput.log
   - cmake --build .
