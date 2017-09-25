@@ -37,6 +37,9 @@ include(global_flags OPTIONAL)
 
 # add dependencies
 find_package(GTest MODULE REQUIRED)
+if(MSVC)
+    add_definitions(-DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0)
+endif()
 
 # project-specific compilation flags
 include(project_flags OPTIONAL)
