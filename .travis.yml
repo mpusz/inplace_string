@@ -113,7 +113,7 @@ before_install:
         (cd ${LLVM_DIR}/build/projects/libcxxabi && make install -j2)
         touch ${LLVM_DIR}/cached
       fi
-      CXX_FLAGS="${CXX_FLAGS} -nostdinc++ -isystem ${LLVM_DIR}/install/include/c++/v1"
+      CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -nostdinc++ -isystem ${LLVM_DIR}/install/include/c++/v1"
       CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -L${LLVM_DIR}/install/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
     fi
