@@ -108,11 +108,11 @@ before_install:
         travis_retry wget --quiet -O - ${LLVM_URL}      | tar --strip-components=1 -xJ -C ${LLVM_DIR}
         travis_retry wget --quiet -O - ${LIBCXX_URL}    | tar --strip-components=1 -xJ -C ${LLVM_DIR}/projects/libcxx
         travis_retry wget --quiet -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C ${LLVM_DIR}/projects/libcxxabi
-        (cd ${LLVM_DIR}/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_DIR}/install -DCMAKE_CXX_COMPILER=${CXX})
+        (cd ${LLVM_DIR}/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_DIR}/install -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Release)
+        (cd ${LLVM_DIR}/build/projects/libcxx && make install -j2)
+        (cd ${LLVM_DIR}/build/projects/libcxxabi && make install -j2)
         touch ${LLVM_DIR}/cached
       fi
-      (cd ${LLVM_DIR}/build/projects/libcxx && make install -j2)
-      (cd ${LLVM_DIR}/build/projects/libcxxabi && make install -j2)
       CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -nostdinc++ -isystem ${LLVM_DIR}/install/include/c++/v1 -Wno-unused-command-line-argument"
       CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -L${LLVM_DIR}/install/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
@@ -136,7 +136,7 @@ before_install:
     git clone --depth=1 https://github.com/google/googletest.git
     cd googletest
     mkdir build && cd build
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local
     cmake --build . --target install
 
 install:
