@@ -22,6 +22,6 @@
 
 add_executable(unit_tests tests.cpp)
 target_link_libraries(unit_tests
-        PRIVATE mp::inplace_string GTest::Main)
+        PRIVATE mp::inplace_string GTest::GTest GTest::Main)
 add_test(NAME inplace_string.unit_tests
          COMMAND unit_tests)

@@ -25,12 +25,13 @@ install:
   - git clone https://github.com/google/googletest.git
   - cd googletest
   - mkdir build && cd build
-  - cmake -DCMAKE_INSTALL_PREFIX=../local -G "Visual Studio 15 2017 Win64" ..
-  - cmake --build . --config Release --target install
+  - cmake -DCMAKE_INSTALL_PREFIX=${APPVEYOR_BUILD_FOLDER}/local -G "Visual Studio 15 2017 Win64" ..
+  - cmake --build . --config ${CONFIGURATION} --target install
 
 before_build:
+  - cd ${APPVEYOR_BUILD_FOLDER}
   - mkdir build && cd build
-  - cmake -CMAKE_INSTALL_PREFIX=../local -G "Visual Studio 15 2017 Win64" ..
+  - cmake -CMAKE_INSTALL_PREFIX=${APPVEYOR_BUILD_FOLDER}/local -G "Visual Studio 15 2017 Win64" ..
 
 build:
   parallel: true
