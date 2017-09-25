@@ -136,7 +136,7 @@ before_install:
     git clone --depth=1 https://github.com/google/googletest.git
     cd googletest
     mkdir build && cd build
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/local -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}"
     cmake --build . --target install
 
 install:
