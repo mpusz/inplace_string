@@ -25,21 +25,22 @@ project(inplace_string
         VERSION 0.0.3)
 
 set(CMAKE_CXX_STANDARD 17)
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
-endif()
-set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+# include common tools and workarounds
+include(tools)
 
 # global compilation flags
 include(global_flags OPTIONAL)
 
+# use Conan configuration if available
+conan_init()
+
 # add dependencies
 find_package(GTest MODULE REQUIRED)
-if(MSVC)
-    add_definitions(-DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0)
-endif()
 
 # project-specific compilation flags
 include(project_flags OPTIONAL)
@@ -48,30 +49,7 @@ include(project_flags OPTIONAL)
 add_subdirectory(src/include)
 
 # add unit tests
-enable_testing()
 add_subdirectory(src/tests)
 
-# prepare installation files
-include(CMakePackageConfigHelpers)
-set(ConfigPackageSource ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME})
-set(ConfigPackageDestination lib/cmake/${CMAKE_PROJECT_NAME})
-write_basic_package_version_file(
-        ${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake
-        COMPATIBILITY SameMajorVersion)
-configure_package_config_file(cmake/simple_package-config.cmake.in
-        ${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake
-        INSTALL_DESTINATION ${ConfigPackageDestination})
-
-# install library
-install(EXPORT ${CMAKE_PROJECT_NAME}Targets
-        DESTINATION ${ConfigPackageDestination}
-        FILE ${CMAKE_PROJECT_NAME}-targets.cmake
-        NAMESPACE mp::
-        COMPONENT Devel
-        CONFIGURATIONS Release)
-install(FILES
-          "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake"
-          "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake"
-        DESTINATION ${ConfigPackageDestination}
-        COMPONENT Devel
-        CONFIGURATIONS Release)
+# generate configuration files and install the package
+configure_and_install(cmake/simple_package-config.cmake.in SameMajorVersion)
