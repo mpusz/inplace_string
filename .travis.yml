@@ -35,6 +35,7 @@ cache:
   directories:
     - ${DEPS_DIR}/cmake-${CMAKE_VERSION}
     - ${DEPS_DIR}/llvm
+    - ${DEPS_DIR}/.conan
 
 git:
   depth: 3
@@ -130,12 +131,15 @@ before_install:
     cmake --version
 
   ############################################################################
-  # Install dependencies
+  # Install conan
   ############################################################################
   - |
     export PATH=$HOME/.local/bin:$PATH
+    export CONAN_USER_HOME=${DEPS_DIR}
     pip install --user conan
     conan user
+    # temporary workaround for missing clang 5.0
+    sed -ie 's/"4.0"\]/"4.0", "5.0"\]/' ${DEPS_DIR}/.conan/settings.yml
 
 install:
   ############################################################################
