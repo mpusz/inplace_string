@@ -20,13 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+if(COMMAND configure_and_install)
+    # header included already
+    return()
+endif()
+
 
 # Provide typical configuration for specific packages
 macro(find_package _name)
     _find_package(${ARGV})
     if("${_name}" STREQUAL "GTest")
-        enable_testing()
-
         # fix an issue of GTest not buildng in Visual Studio 2017 with C++17
         if(CMAKE_CXX_STANDARD STREQUAL "17" AND MSVC)
             add_definitions(-DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0)
@@ -39,6 +42,9 @@ endmacro()
 macro(conan_init)
     if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
         include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+        conan_basic_setup(TARGETS)
+    elseif(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
+        include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
         conan_basic_setup(TARGETS)
     endif()
 endmacro()
@@ -62,14 +68,12 @@ function(configure_and_install _configure_in_file_path _version_compare_rules)
             DESTINATION ${ConfigPackageDestination}
             FILE ${CMAKE_PROJECT_NAME}-targets.cmake
             NAMESPACE mp::
-            COMPONENT Devel
-            CONFIGURATIONS Release)
+            COMPONENT Devel)
     install(FILES
             "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake"
             "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config-version.cmake"
             DESTINATION ${ConfigPackageDestination}
-            COMPONENT Devel
-            CONFIGURATIONS Release)
+            COMPONENT Devel)
 endfunction()
 
 

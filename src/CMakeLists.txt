@@ -20,17 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.8)
+project(inplace_string
+        VERSION 0.0.3)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# set path to custom cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+
+# include common tools and workarounds
+include(tools)
+
 # library definition
 add_library(inplace_string INTERFACE)
 add_library(mp::inplace_string ALIAS inplace_string)
 target_include_directories(inplace_string INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
 # installation info
 install(TARGETS inplace_string EXPORT ${CMAKE_PROJECT_NAME}Targets
         INCLUDES DESTINATION include)
-install(DIRECTORY inplace_string
+install(DIRECTORY include/inplace_string
         DESTINATION include
-        COMPONENT Devel
-        CONFIGURATIONS Release)
+        COMPONENT Devel)
+
+# generate configuration files and install the package
+configure_and_install(../cmake/simple_package-config.cmake.in SameMajorVersion)

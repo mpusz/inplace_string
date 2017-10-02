@@ -20,36 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.8)
-project(inplace_string
-        VERSION 0.0.3)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
-# include common tools and workarounds
-include(tools)
-
-# global compilation flags
-include(global_flags OPTIONAL)
-
-# use Conan configuration if available
-conan_init()
-
-# add dependencies
-find_package(GTest MODULE REQUIRED)
-
-# project-specific compilation flags
-include(project_flags OPTIONAL)
+cmake_minimum_required(VERSION 2.8)
+project(inplace_string)
 
 # add project code
-add_subdirectory(src/include)
+add_subdirectory(src)
 
 # add unit tests
-add_subdirectory(src/tests)
-
-# generate configuration files and install the package
-configure_and_install(cmake/simple_package-config.cmake.in SameMajorVersion)
+enable_testing()
+add_subdirectory(test_package)

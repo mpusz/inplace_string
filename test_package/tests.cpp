@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "inplace_string/inplace_string.h"
+#include <inplace_string/inplace_string.h>
 #include <gtest/gtest.h>
 
 // explicit instantiation needed to make code coverage metrics work correctly

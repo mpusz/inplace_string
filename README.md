@@ -7,3 +7,17 @@
 
 `mp::inplace_string<CharT, MaxSize, Traits>` is a `std::string`-like class template with the difference
 that the text content is always stored in-place inside the class (like in SSO case in `std::string`).
+
+# Repository structure
+
+That repository contains 3 `cmake`-based projects:
+ - `./src` - header-only project for `mp::inplace_string`
+ - `.` - project wrapping `./src` project and adding unit tests for it
+ - `./test_package` - project used in installed package verification process
+ 
+Please note that all projects depend on some `cmake` modules in `./cmake` directory.
+
+# Building, testing and installation
+
+For detailed information on project compilation, testing and reuse please refer to
+[INSTALL.md](install.md).

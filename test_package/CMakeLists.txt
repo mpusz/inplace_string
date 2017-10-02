@@ -20,8 +20,42 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_executable(unit_tests tests.cpp)
+cmake_minimum_required(VERSION 3.8)
+project(inplace_string_test)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# set path to custom cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../cmake")
+
+# include common tools and workarounds
+include(tools)
+
+# use Conan configuration if available
+conan_init()
+
+# add dependencies
+enable_testing()
+find_package(GTest MODULE REQUIRED)
+if(NOT TARGET mp::inplace_string)
+    find_package(inplace_string CONFIG REQUIRED)
+endif()
+
+# global compilation flags
+include(global_flags OPTIONAL)
+# project-specific compilation flags
+include(project_flags OPTIONAL)
+
+add_executable(unit_tests ../test_package/tests.cpp)
 target_link_libraries(unit_tests
         PRIVATE mp::inplace_string GTest::Main)
 add_test(NAME inplace_string.unit_tests
-         COMMAND unit_tests)
+        COMMAND unit_tests)
+
+#add_library(test_fail STATIC EXCLUDE_FROM_ALL
+#        foo_fail.cpp)
+#add_test(NAME inplace_string.fail
+#        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target foo_fail)
+#set_property(TEST inplace_string.fail PROPERTY
+#        PASS_REGULAR_EXPRESSION "static assert message")
