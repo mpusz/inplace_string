@@ -138,7 +138,10 @@ before_install:
     export CONAN_USER_HOME=${DEPS_DIR}
     pip install --user conan
     conan user
+  - |
     # temporary workaround for missing clang 5.0
+    cd ${TRAVIS_BUILD_DIR}
+    conan info
     sed -ie 's/"4.0"\]/"4.0", "5.0"\]/' ${DEPS_DIR}/.conan/settings.yml
 
 install:
