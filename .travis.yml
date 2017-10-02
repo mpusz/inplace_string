@@ -117,6 +117,7 @@ before_install:
       CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -nostdinc++ -isystem ${LLVM_DIR}/install/include/c++/v1"
       CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -L${LLVM_DIR}/install/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
+      CONAN_CLANG_LIBC="-s compiler.clang.libcxx=libc++"
     fi
 
   ############################################################################
@@ -151,7 +152,7 @@ install:
   - |
     cd ${TRAVIS_BUILD_DIR}
     mkdir build && cd build
-    conan install .. -s build_type=${BUILD_TYPE} --build=missing
+    conan install .. -s build_type=${BUILD_TYPE} --build=missing ${CONAN_CLANG_LIBC}
     echo cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DCODE_COVERAGE=$CODECOV
     cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" -DCMAKE_EXE_LINKER_FLAGS="${CXX_LINKER_FLAGS}" -DCODE_COVERAGE=$CODECOV
   - cat CMakeFiles/CMakeError.log
