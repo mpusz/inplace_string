@@ -20,4 +20,4 @@ Please note that all projects depend on some `cmake` modules in `./cmake` direct
 # Building, testing and installation
 
 For detailed information on project compilation, testing and reuse please refer to
-[INSTALL.md](install.md).
+[INSTALL.md](INSTALL.md).
