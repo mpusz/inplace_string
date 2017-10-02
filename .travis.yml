@@ -117,7 +117,7 @@ before_install:
       CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -nostdinc++ -isystem ${LLVM_DIR}/install/include/c++/v1"
       CXX_LINKER_FLAGS="${CXX_LINKER_FLAGS} -L${LLVM_DIR}/install/lib -lc++ -lc++abi"
       export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
-      CONAN_CLANG_LIBC="-s compiler.clang.libcxx=libc++"
+      CONAN_CLANG_LIBC="-s compiler=clang -s compiler.version=5.0 -s compiler.libcxx=libc++"
     fi
 
   ############################################################################
