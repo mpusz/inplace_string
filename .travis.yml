@@ -133,7 +133,8 @@ before_install:
   # Install dependencies
   ############################################################################
   - |
-    pip install conan
+    export PATH=$HOME/.local/bin:$PATH
+    pip install --user conan
     conan user
 
 install:
