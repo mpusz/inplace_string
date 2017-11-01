@@ -77,7 +77,7 @@ before_install:
   - |
     # Install requested CMake version
     if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
-      if [ -f ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached ]; then
+      if [ ! -f ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached ]; then
         CMAKE_URL="https://cmake.org/files/v3.9/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz"
         mkdir -p ${DEPS_DIR}/cmake-${CMAKE_VERSION}
         travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake-${CMAKE_VERSION}
@@ -95,7 +95,7 @@ before_install:
     if [ -n "$CLANG_VERSION" ]; then
       LLVM_VERSION=${CLANG_VERSION}.0
       LLVM_DIR=${DEPS_DIR}/llvm/llvm-${LLVM_VERSION}
-      if [ -f ${LLVM_DIR}/cached ]; then
+      if [ ! -f ${LLVM_DIR}/cached ]; then
         LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
         LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
         LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
@@ -108,7 +108,7 @@ before_install:
         (cd ${LLVM_DIR}/build/projects/libcxxabi && make install -j2)
         touch ${LLVM_DIR}/cached
       fi
-      export CXXFLAGS="${CXXFLAGS} -stdlib=libc++ -nostdinc++ -I${LLVM_DIR}/install/include/c++/v1"
+      export CXXFLAGS="${CXXFLAGS} -stdlib=libc++ -nostdinc++ -I${LLVM_DIR}/install/include/c++/v1 -Wno-unused-command-line-argument"
       export LDFLAGS="${LDFLAGS} -L${LLVM_DIR}/install/lib -Wl,-rpath,${LLVM_DIR}/install/lib"
       export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
       CONAN_CLANG_LIBC="-s compiler=clang -s compiler.version=${CLANG_VERSION} -s compiler.libcxx=libc++"
@@ -122,6 +122,7 @@ before_install:
     if [[ "$SANITIZER" != "" ]]; then echo SANITIZER=$SANITIZER; fi
     which cmake
     cmake --version
+    conan --version
 
   - |
     # Install conan
@@ -129,11 +130,6 @@ before_install:
     export CONAN_USER_HOME=${DEPS_DIR}
     pip install --user conan
     conan user
-  - |
-    # temporary workaround for conan missing clang 5.0
-    cd ${TRAVIS_BUILD_DIR}
-    conan info
-    sed -ie 's/"4.0"\]/"4.0", "5.0"\]/' ${DEPS_DIR}/.conan/settings.yml
 
 install:
   - |
