@@ -115,6 +115,13 @@ before_install:
     fi
 
   - |
+    # Install conan
+    export PATH=$HOME/.local/bin:$PATH
+    export CONAN_USER_HOME=${DEPS_DIR}
+    pip install --user conan
+    conan user
+
+  - |
     # Print environment
     which $CXX
     which $CC
@@ -123,13 +130,6 @@ before_install:
     which cmake
     cmake --version
     conan --version
-
-  - |
-    # Install conan
-    export PATH=$HOME/.local/bin:$PATH
-    export CONAN_USER_HOME=${DEPS_DIR}
-    pip install --user conan
-    conan user
 
 install:
   - |
