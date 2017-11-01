@@ -22,6 +22,7 @@ init:
 clone_depth: 5
   
 install:
+  - git submodule update --init --recursive
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan
   - conan user
