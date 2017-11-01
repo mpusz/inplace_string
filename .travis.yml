@@ -165,7 +165,7 @@ script:
   - |
     if [ -n "$CONAN_ONLY" ]; then
       # Verify everything with Conan
-      conan create mpusz/testing
+      conan create --build=missing mpusz/testing
     else
       # Run unit tests
       ctest -VV -j2
