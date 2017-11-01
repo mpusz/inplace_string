@@ -56,6 +56,15 @@ matrix:
       addons: *gcc7
 
     - os: linux
+      env: GCC_VERSION=7 BUILD_TYPE=Release CONAN_ONLY=ON
+      addons: &gcc7
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+
+    - os: linux
       env: CLANG_VERSION=5.0 BUILD_TYPE=Release CODECOV=OFF
       addons: &clang5
         apt:
@@ -134,22 +143,33 @@ before_install:
 install:
   - |
     # Configure project
-    cd ${TRAVIS_BUILD_DIR}
-    mkdir build && cd build
-    conan install .. -s build_type=${BUILD_TYPE} --build=missing ${CONAN_CLANG_LIBC}
-    cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCODE_COVERAGE=$CODECOV
+    if [ ! -n "$CONAN_ONLY" ]; then
+      cd ${TRAVIS_BUILD_DIR}
+      mkdir build && cd build
+      conan install .. -s build_type=${BUILD_TYPE} --build=missing ${CONAN_CLANG_LIBC}
+      cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCODE_COVERAGE=$CODECOV
+    fi
   - |
     # Dump cmake logs
-    cat CMakeFiles/CMakeError.log
-    cat CMakeFiles/CMakeOutput.log
+    if [ ! -n "$CONAN_ONLY" ]; then
+      cat CMakeFiles/CMakeError.log
+      cat CMakeFiles/CMakeOutput.log
+    fi
   - |
     # Build project
-    cmake --build .
+    if [ ! -n "$CONAN_ONLY" ]; then
+      cmake --build .
+    fi
 
 script:
   - |
-    # Run unit tests
-    ctest -VV -j2
+    if [ -n "$CONAN_ONLY" ]; then
+      # Verify everything with Conan
+      conan create mpusz/testing
+    else
+      # Run unit tests
+      ctest -VV -j2
+    fi
 
 after_success:
   - |

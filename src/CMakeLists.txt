@@ -43,7 +43,7 @@ target_include_directories(inplace_string INTERFACE
 # installation info
 install(TARGETS inplace_string EXPORT ${CMAKE_PROJECT_NAME}Targets
         INCLUDES DESTINATION include)
-install(DIRECTORY include/inplace_string
+install(DIRECTORY include/mp
         DESTINATION include
         COMPONENT Devel)
 

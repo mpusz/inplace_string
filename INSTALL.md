@@ -56,7 +56,7 @@ installation you can perform any of the following actions
 ## conan
 
 ```bash
-conan test_package <username>/<channel> --build=missing <your_profile_and_settings>
+conan create <username>/<channel> --build=missing <your_profile_and_settings>
 ```
 
 ## cmake

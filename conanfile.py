@@ -12,7 +12,7 @@ class InplaceStringConan(ConanFile):
     build_requires = "gtest/1.7.0@lasote/stable"
     default_options = "gtest:shared=False"
     generators = "cmake"
-    exports_sources = "src/*", "cmake/tools.cmake", "cmake/simple_package-config.cmake.in"
+    exports_sources = "src/*", "cmake/common/cmake/tools.cmake", "cmake/common/cmake/simple_package-config.cmake.in"
 
     def build(self):
         cmake = CMake(self)
