@@ -28,7 +28,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/common/cmake")
 
 # include common tools and workarounds
 include(tools)
@@ -48,4 +48,4 @@ install(DIRECTORY include/inplace_string
         COMPONENT Devel)
 
 # generate configuration files and install the package
-configure_and_install(../cmake/simple_package-config.cmake.in SameMajorVersion)
+configure_and_install(../cmake/common/cmake/simple_package-config.cmake.in SameMajorVersion)

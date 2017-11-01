@@ -27,7 +27,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../cmake/common/cmake")
 
 # include common tools and workarounds
 include(tools)
@@ -41,11 +41,6 @@ find_package(GTest MODULE REQUIRED)
 if(NOT TARGET mp::inplace_string)
     find_package(inplace_string CONFIG REQUIRED)
 endif()
-
-# global compilation flags
-include(global_flags OPTIONAL)
-# project-specific compilation flags
-include(project_flags OPTIONAL)
 
 add_executable(unit_tests ../test_package/tests.cpp)
 target_link_libraries(unit_tests
