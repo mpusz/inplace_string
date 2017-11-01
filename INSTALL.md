@@ -91,4 +91,5 @@ conan install .. <your_profile_and_settings>
 cmake .. <your_cmake_configuration>
 cmake --build .
 ctest
+conan export -p .. <username>/<channel>
 ```
