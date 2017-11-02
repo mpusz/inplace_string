@@ -1,6 +1,5 @@
 from conans import ConanFile, CMake
 
-
 class InplaceStringConan(ConanFile):
     name = "inplace_string"
     version = "0.0.3"
@@ -16,7 +15,7 @@ class InplaceStringConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_dir="src")
+        cmake.configure(source_dir="%s/src" % self.source_folder)
         cmake.install()
 
     def package_info(self):

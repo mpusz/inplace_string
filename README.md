@@ -2,6 +2,7 @@
 [![Travis CI](https://img.shields.io/travis/mpusz/inplace_string/master.svg?label=Travis%20CI)](https://travis-ci.org/mpusz/inplace_string)
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/inplace-string/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/inplace-string)
 [![Codecov](https://img.shields.io/codecov/c/github/mpusz/inplace_string/master.svg)](https://codecov.io/github/mpusz/inplace_string?branch=master)
+[![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/inplace_string%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/inplace_string%3Ampusz/_latestVersion)
 
 # `mp::inplace_string<CharT, MaxSize, Traits>`
 

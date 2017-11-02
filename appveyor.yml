@@ -20,7 +20,7 @@ init:
   - git config --global core.autocrlf input
 
 clone_depth: 5
-  
+
 install:
   - git submodule update --init --recursive
   - set PATH=%PATH%;%PYTHON%/Scripts/

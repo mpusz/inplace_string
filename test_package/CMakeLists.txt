@@ -47,10 +47,3 @@ target_link_libraries(unit_tests
         PRIVATE mp::inplace_string GTest::Main)
 add_test(NAME inplace_string.unit_tests
         COMMAND unit_tests)
-
-#add_library(test_fail STATIC EXCLUDE_FROM_ALL
-#        foo_fail.cpp)
-#add_test(NAME inplace_string.fail
-#        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target foo_fail)
-#set_property(TEST inplace_string.fail PROPERTY
-#        PASS_REGULAR_EXPRESSION "static assert message")
