@@ -374,7 +374,7 @@ TEST(inPlaceString, UserConstructorPtrSize5)
 
 TEST(inPlaceString, UserConstructorPtr1)
 {
-  inplace_string<16> str{""};
+  inplace_string<16> str;
   EXPECT_TRUE(str.empty());
   EXPECT_EQ(0u, str.size());
   EXPECT_EQ(0u, str.length());
@@ -652,8 +652,8 @@ TEST(inPlaceString, BeginEnd1)
 
 TEST(inPlaceString, BeginEnd2)
 {
-  std::string txt{""};
-  inplace_string<16> str{""};
+  std::string txt;
+  inplace_string<16> str;
   EXPECT_EQ(std::distance(std::begin(txt), std::end(txt)), std::distance(std::begin(str), std::end(str)));
   EXPECT_TRUE(std::equal(std::begin(txt), std::end(txt), std::begin(str), std::end(str)));
 }
@@ -676,8 +676,8 @@ TEST(inPlaceString, BeginEnd4)
 
 TEST(inPlaceString, BeginEnd5)
 {
-  const std::string txt{""};
-  const inplace_string<16> str{""};
+  const std::string txt;
+  const inplace_string<16> str;
   EXPECT_EQ(std::distance(std::begin(txt), std::end(txt)), std::distance(std::begin(str), std::end(str)));
   EXPECT_TRUE(std::equal(std::begin(txt), std::end(txt), std::begin(str), std::end(str)));
 }
@@ -700,8 +700,8 @@ TEST(inPlaceString, RBeginREnd1)
 
 TEST(inPlaceString, RBeginREnd2)
 {
-  std::string txt{""};
-  inplace_string<16> str{""};
+  std::string txt;
+  inplace_string<16> str;
   EXPECT_EQ(std::distance(std::rbegin(txt), std::rend(txt)), std::distance(std::rbegin(str), std::rend(str)));
   EXPECT_TRUE(std::equal(std::rbegin(txt), std::rend(txt), std::rbegin(str), std::rend(str)));
 }
@@ -724,8 +724,8 @@ TEST(inPlaceString, RBeginREnd4)
 
 TEST(inPlaceString, RBeginREnd5)
 {
-  const std::string txt{""};
-  const inplace_string<16> str{""};
+  const std::string txt;
+  const inplace_string<16> str;
   EXPECT_EQ(std::distance(std::rbegin(txt), std::rend(txt)), std::distance(std::rbegin(str), std::rend(str)));
   EXPECT_TRUE(std::equal(std::rbegin(txt), std::rend(txt), std::rbegin(str), std::rend(str)));
 }
@@ -748,8 +748,8 @@ TEST(inPlaceString, CBeginCEnd1)
 
 TEST(inPlaceString, CBeginCEnd2)
 {
-  std::string txt{""};
-  inplace_string<16> str{""};
+  std::string txt;
+  inplace_string<16> str;
   EXPECT_EQ(std::distance(txt.cbegin(), txt.cend()), std::distance(str.cbegin(), str.cend()));
   EXPECT_TRUE(std::equal(txt.cbegin(), txt.cend(), str.cbegin(), str.cend()));
 }
@@ -772,8 +772,8 @@ TEST(inPlaceString, CRBeginCREnd1)
 
 TEST(inPlaceString, CRBeginCREnd2)
 {
-  std::string txt{""};
-  inplace_string<16> str{""};
+  std::string txt;
+  inplace_string<16> str;
   EXPECT_EQ(std::distance(txt.crbegin(), txt.crend()), std::distance(str.crbegin(), str.crend()));
   EXPECT_TRUE(std::equal(txt.crbegin(), txt.crend(), str.crbegin(), str.crend()));
 }
@@ -1079,8 +1079,6 @@ TEST(inPlaceString, AppendOtherPosN2)
   EXPECT_NE(std::begin(str), std::end(str));
   EXPECT_EQ(8, std::distance(std::begin(str), std::end(str)));
 }
-
-
 
 TEST(inPlaceString, AssignOther1)
 {
