@@ -57,12 +57,7 @@ matrix:
 
     - os: linux
       env: GCC_VERSION=7 BUILD_TYPE=Release CONAN_ONLY=ON
-      addons: &gcc7
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
+      addons: *gcc7
 
     - os: linux
       env: CLANG_VERSION=5.0 BUILD_TYPE=Release CODECOV=OFF

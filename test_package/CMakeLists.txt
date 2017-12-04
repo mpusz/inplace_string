@@ -39,7 +39,7 @@ if(NOT TARGET mp::inplace_string)
     find_package(inplace_string CONFIG REQUIRED)
 endif()
 
-add_executable(unit_tests ../test_package/tests.cpp)
+add_executable(unit_tests tests.cpp)
 target_link_libraries(unit_tests
         PRIVATE mp::inplace_string GTest::Main)
 add_test(NAME inplace_string.unit_tests

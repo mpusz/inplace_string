@@ -29,8 +29,7 @@
 *.app
 
 # IDE-specific
-.idea/
-.vs/
+.*/
 cmake-build-*/
 
 # Conan
